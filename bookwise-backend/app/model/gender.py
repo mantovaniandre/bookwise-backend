@@ -6,14 +6,15 @@ from util.datatime.data_time_conversion import DataTimeConversion
 
 data_time_conversion = DataTimeConversion()
 
-class UserType(Base):
-    __tablename__ = 'usertypes'
+
+class Gender(Base):
+    __tablename__ = 'genders'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(String(50), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='usertype')
+    user = relationship('User', back_populates='gender')
 
     def __init__(self, **kwargs):
         self.description = kwargs.get('description')
@@ -28,6 +29,3 @@ class UserType(Base):
             "description": self.description,
             "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
         }
-
-
-

@@ -36,35 +36,18 @@ class UserRepository:
             raise f"Internal error: {e}"
 
     @staticmethod
-    def save_user(new_user):
+    def save_user_to_database(new_user):
         try:
             session.add(new_user)
             session.commit()
             session.refresh(new_user)
             user_id = new_user.id
             if user_id is not None:
-                session.close()
                 return True
             else:
                 session.rollback()
                 return False
-        except exc.SQLAlchemyError as e:
-            session.rollback()
-            raise f"Internal error: {e}"
-
-    @staticmethod
-    def save_address(new_address):
-        try:
-            session.add(new_address)
-            session.commit()
-            session.refresh(new_address)
-            address_id = new_address.id
-            if address_id is not None:
-                session.close()
-                return address_id
-            else:
-                session.rollback()
-                return False
+            session.close()
         except exc.SQLAlchemyError as e:
             session.rollback()
             raise f"Internal error: {e}"
@@ -77,11 +60,11 @@ class UserRepository:
             session.refresh(new_usertype)
             usertype_id = new_usertype.id
             if usertype_id is not None:
-                session.close()
                 return usertype_id
             else:
                 session.rollback()
                 return False
+            session.close()
         except exc.SQLAlchemyError as e:
             session.rollback()
             raise f"Internal error: {e}"

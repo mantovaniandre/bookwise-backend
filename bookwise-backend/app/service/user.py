@@ -1,23 +1,26 @@
-from model.address import Address
 from model.user import User
 import bcrypt
-from model.usertype import UserType
+from repository.address import AddressRepository
 from repository.user import UserRepository
 from service.address import AddressService
+from service.gender import GenderService
 from service.usertype import UsertypeService
-from util.exception.custom_exception import CPFAlreadyExists, EmailAlreadyExists, ValidateUserDataError
+from util.exception.custom_exception import CPFAlreadyExists, EmailAlreadyExists, ValidateUserDataError, NewUserError, \
+    RegisterUserError
 
 # created instances
 user_repository = UserRepository()
+address_repository = AddressRepository()
 address_service = AddressService()
 usertype_service = UsertypeService()
+gender_service = GenderService()
 
 
 class UserService:
     @staticmethod
     def validate_user_data(user_data):
-        required_fields = ['first_name', 'last_name', 'email', 'password', 'cpf', 'gender', 'phone', 'birthday',
-                           'address', 'usertype']
+        required_fields = ['first_name', 'last_name', 'email', 'password', 'cpf', 'phone', 'birthday',
+                           'address', 'usertype', 'gender']
 
         for field in required_fields:
             if field not in user_data:
@@ -42,43 +45,56 @@ class UserService:
         return encrypt_password.decode('utf-8')
 
     @staticmethod
-    def create_user(user_data: User, address_id, usertype_id):
+    def create_new_user(user_data: User, encrypted_password, address_id, usertype_id, gender_id):
         new_user = User(
             first_name=user_data['first_name'],
             last_name=user_data['last_name'],
             email=user_data['email'],
-            password=user_data['password'],
+            password=encrypted_password,
             cpf=user_data['cpf'],
-            gender=user_data['gender'],
             phone=user_data['phone'],
             birthday=user_data['birthday'],
             address_id=address_id,
-            usertype_id=usertype_id
+            usertype_id=usertype_id,
+            gender_id=gender_id
         )
-        return new_user
+        if new_user:
+            return new_user
+        else:
+            raise NewUserError()
 
     @staticmethod
-    def save_user(user_data):
-        UserService.validate_user_data(user_data)
+    def validate_user_created_successfully(address_id):
+        address_service.delete_address_by_id(address_id)
 
-        UserService.email_exists(user_data['email'])
+    @staticmethod
+    def register_user(user_data):
+        try:
+            UserService.validate_user_data(user_data)
 
-        UserService.cpf_exists(user_data['cpf'])
+            UserService.email_exists(user_data['email'])
 
-        UserService.encrypt_password(user_data['password'])
+            UserService.cpf_exists(user_data['cpf'])
 
-        new_address = address_service.create_address(**user_data['address'])
+            encrypted_password = UserService.encrypt_password(user_data['password'])
 
-        address_id = user_repository.save_address(new_address)
+            new_address = address_service.create_address(**user_data['address'])
 
-        new_usertype = usertype_service.create_usertype(**user_data['usertype'])
+            address_id = address_repository.save_address(new_address)
 
-        usertype_id = user_repository.save_usertype(new_usertype)
+            usertype_service.validate_usertype(user_data['usertype']['description'])
 
-        new_user = UserService.create_user(user_data, address_id, usertype_id)
+            usertype_id = usertype_service.find_id(user_data['usertype']['description'])
 
-        user_repository.save_user(new_user)
+            gender_service.validate_gender(user_data['gender']['description'])
 
+            gender_id = gender_service.find_id(user_data['gender']['description'])
 
+            new_user = UserService.create_new_user(user_data, encrypted_password, address_id, usertype_id, gender_id)
+
+            user_repository.save_user_to_database(new_user)
+        except Exception as e:
+            UserService.validate_user_created_successfully(address_id)
+            raise RegisterUserError(e)
 
 

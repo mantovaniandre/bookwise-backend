@@ -13,11 +13,12 @@ session = Session()
 
 
 @user_route.route("/register", methods=["POST"])
-def create_user():
+def register_user():
     try:
         user_data = request.get_json()
-        user_controller.create_user(user_data)
+        user_controller.register_user(user_data)
         return user_response.response_user_created_successfully()
     except Exception as e:
+        session.rollback()
         exception_error = str(e)
         return user_response.response_error_creating_user(exception_error)

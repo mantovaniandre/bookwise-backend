@@ -1,8 +1,9 @@
 from flask import Flask
-from configuration.database import Base, engine
+from migration.initial_data import create_tables, create_userType, drop_tables, create_gender
 from model.user import User
 from model.address import Address
 from model.usertype import UserType
+from model.gender import Gender
 from route.user import user_route
 
 app = Flask(__name__)
@@ -10,10 +11,9 @@ app = Flask(__name__)
 app.register_blueprint(user_route, url_prefix="/user")
 
 
-def create_tables():
-    Base.metadata.create_all(engine)
-
-
 if __name__ == "__main__":
+    drop_tables()
     create_tables()
+    create_userType()
+    create_gender()
     app.run(debug=True)

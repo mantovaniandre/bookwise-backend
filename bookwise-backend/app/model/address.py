@@ -2,7 +2,10 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from configuration.database import Base
-from datetime import datetime
+from util.datatime import data_time_conversion
+from util.datatime.data_time_conversion import DataTimeConversion
+
+data_time_conversion = DataTimeConversion()
 
 
 class Address(Base):
@@ -19,7 +22,7 @@ class Address(Base):
     country = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User')
+    user = relationship('User', back_populates='address')
 
     def __init__(self, **kwargs):
         self.street = kwargs.get('street')
@@ -30,7 +33,7 @@ class Address(Base):
         self.state = kwargs.get('state')
         self.zipcode = kwargs.get('zipcode')
         self.country = kwargs.get('country')
-        self.last_update = datetime.utcnow()
+        self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
 
     def __repr__(self):
         return f"<Address(id={self.id}, street='{self.street}', number='{self.number}', city='{self.city}', " \
@@ -47,5 +50,5 @@ class Address(Base):
             "state": self.state,
             "zipcode": self.zipcode,
             "country": self.country,
-            "last_update": self.last_update.isoformat()
+            "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
         }
