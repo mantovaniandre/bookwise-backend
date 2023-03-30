@@ -12,7 +12,7 @@ app.register_blueprint(user_route, url_prefix="/user")
 
 
 if __name__ == "__main__":
-    drop_tables()
+    # drop_tables()
     create_tables()
     create_userType()
     create_gender()

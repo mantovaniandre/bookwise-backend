@@ -19,6 +19,5 @@ def register_user():
         user_controller.register_user(user_data)
         return user_response.response_user_created_successfully()
     except Exception as e:
-        session.rollback()
         exception_error = str(e)
         return user_response.response_error_creating_user(exception_error)

@@ -1,5 +1,4 @@
 from configuration.database import Session
-from sqlalchemy import exc
 
 from model.address import Address
 
@@ -20,10 +19,11 @@ class AddressRepository:
             else:
                 session.rollback()
                 return False
-            session.close()
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 
     @staticmethod
     def delete_address_by_id(address_id):
@@ -35,9 +35,10 @@ class AddressRepository:
                 return True
             else:
                 return False
-            session.close()
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 
 

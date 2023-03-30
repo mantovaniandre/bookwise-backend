@@ -1,12 +1,11 @@
 from model.user import User
 import bcrypt
+import re
 from repository.address import AddressRepository
 from repository.user import UserRepository
 from service.address import AddressService
 from service.gender import GenderService
 from service.usertype import UsertypeService
-from util.exception.custom_exception import CPFAlreadyExists, EmailAlreadyExists, ValidateUserDataError, NewUserError, \
-    RegisterUserError
 
 # created instances
 user_repository = UserRepository()
@@ -24,25 +23,38 @@ class UserService:
 
         for field in required_fields:
             if field not in user_data:
-                raise ValidateUserDataError(field)
+                raise ValueError(f"Required field '{field}' not provided.")
+            elif not user_data[field]:
+                raise ValueError(f"Field '{field}' cannot be empty.")
 
     @staticmethod
-    def email_exists(email):
-        email_exists = user_repository.get_user_by_email(email)
+    def validate_email(email):
+        standard = r"[^@]+@[^@]+\.[^@]+"
+        if re.match(standard, email):
+            email_exists = user_repository.get_user_by_email(email)
+        else:
+            raise ValueError(f"email: {email} with undefined pattern")
         if email_exists is False:
-            raise EmailAlreadyExists(email)
+            raise ValueError(f"Email {email} already exists.")
 
     @staticmethod
-    def cpf_exists(cpf):
-        cpf_exists = user_repository.get_user_by_cpf(cpf)
+    def validate_cpf(cpf):
+        cpf_exists = True
+        if len(cpf) == 14:
+            cpf_exists = user_repository.get_user_by_cpf(cpf)
+        elif len(cpf) > 14:
+            raise ValueError(f"The cpf {cpf} is greater than 14 digits")
+        elif len(cpf) < 14:
+            raise ValueError(f"The cpf {cpf} is less than 14 digits")
         if cpf_exists is False:
-            raise CPFAlreadyExists(cpf)
+            raise ValueError(f"CPF {cpf} already exists.")
 
     @staticmethod
     def encrypt_password(password):
         salt = bcrypt.gensalt()
         encrypt_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return encrypt_password.decode('utf-8')
+        encrypted_password = encrypt_password.decode('utf-8')
+        return encrypted_password
 
     @staticmethod
     def create_new_user(user_data: User, encrypted_password, address_id, usertype_id, gender_id):
@@ -61,7 +73,7 @@ class UserService:
         if new_user:
             return new_user
         else:
-            raise NewUserError()
+            raise ValueError(f"error creating new user.")
 
     @staticmethod
     def validate_user_created_successfully(address_id):
@@ -69,12 +81,13 @@ class UserService:
 
     @staticmethod
     def register_user(user_data):
+        address_id = 0
         try:
             UserService.validate_user_data(user_data)
 
-            UserService.email_exists(user_data['email'])
+            UserService.validate_email(user_data['email'])
 
-            UserService.cpf_exists(user_data['cpf'])
+            UserService.validate_cpf(user_data['cpf'])
 
             encrypted_password = UserService.encrypt_password(user_data['password'])
 
@@ -94,7 +107,9 @@ class UserService:
 
             user_repository.save_user_to_database(new_user)
         except Exception as e:
-            UserService.validate_user_created_successfully(address_id)
-            raise RegisterUserError(e)
-
+            if address_id:
+                UserService.validate_user_created_successfully(address_id)
+                raise ValueError(f"{e}")
+            else:
+                raise ValueError(f"{e}")
 

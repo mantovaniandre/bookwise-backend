@@ -1,5 +1,4 @@
 from configuration.database import Session
-from sqlalchemy import exc
 from model.user import User
 
 # created instances
@@ -11,29 +10,31 @@ class UserRepository:
     def get_user_by_email(email):
         try:
             email_exists = session.query(User).filter_by(email=email).first()
-            session.close()
             if email_exists is None:
                 return True
             else:
                 session.rollback()
                 return False
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 
     @staticmethod
     def get_user_by_cpf(cpf):
         try:
             cpf_exists = session.query(User).filter_by(cpf=cpf).first()
-            session.close()
             if cpf_exists is None:
                 return True
             else:
                 session.rollback()
                 return False
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 
     @staticmethod
     def save_user_to_database(new_user):
@@ -47,10 +48,11 @@ class UserRepository:
             else:
                 session.rollback()
                 return False
-            session.close()
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 
     @staticmethod
     def save_usertype(new_usertype):
@@ -64,8 +66,9 @@ class UserRepository:
             else:
                 session.rollback()
                 return False
-            session.close()
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
 

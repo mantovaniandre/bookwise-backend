@@ -1,6 +1,5 @@
 from configuration.database import Session
 from model.usertype import UserType
-from sqlalchemy import exc
 
 # created instances
 session = Session()
@@ -16,7 +15,8 @@ class UsertypeRepository:
                 return description_found.id
             else:
                 return False
-            session.close()
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise f"Internal data base error: {e}"
+        finally:
+            session.close()

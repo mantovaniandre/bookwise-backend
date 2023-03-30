@@ -1,6 +1,5 @@
 from configuration.database import Session
 from model.gender import Gender
-from sqlalchemy import exc
 
 # created instances
 session = Session()
@@ -12,11 +11,12 @@ class GenderRepository:
         try:
             description_found = session.query(Gender).filter_by(description=description).first()
             session.commit()
-            session.close()
             if description_found is not None:
                 return description_found.id
             else:
                 return False
-        except exc.SQLAlchemyError as e:
+        except Exception as e:
             session.rollback()
-            raise f"Internal error: {e}"
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()

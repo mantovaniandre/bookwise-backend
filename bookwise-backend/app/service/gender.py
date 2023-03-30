@@ -1,5 +1,4 @@
 from repository.gender import GenderRepository
-from util.exception.custom_exception import ValidateGenderError, DescriptionGenderError
 
 gender_repository = GenderRepository()
 
@@ -12,11 +11,11 @@ class GenderService:
         if description == 'Feminine':
             return True
         else:
-            raise ValidateGenderError(description)
+            raise ValueError(f"The usertype: '{description}' not exists.")
 
     @staticmethod
     def find_id(description):
         gender_description_id = gender_repository.get_id_gender_by_description(description)
         if gender_description_id is False:
-            raise DescriptionGenderError(description)
+            raise ValueError(f"The gender: '{description}' not exists to found id.")
         return gender_description_id
