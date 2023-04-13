@@ -24,15 +24,15 @@ class Address(Base):
 
     user = relationship('User', back_populates='address')
 
-    def __init__(self, **kwargs):
-        self.street = kwargs.get('street')
-        self.number = kwargs.get('number')
-        self.complement = kwargs.get('complement')
-        self.neighborhood = kwargs.get('neighborhood')
-        self.city = kwargs.get('city')
-        self.state = kwargs.get('state')
-        self.zipcode = kwargs.get('zipcode')
-        self.country = kwargs.get('country')
+    def __init__(self, street, number, complement, neighborhood, city, state, zipcode, country):
+        self.street = street
+        self.number = number
+        self.complement = complement
+        self.neighborhood = neighborhood
+        self.city = city
+        self.state = state
+        self.zipcode = zipcode
+        self.country = country
         self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
 
     def __repr__(self):

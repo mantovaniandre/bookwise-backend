@@ -1,3 +1,4 @@
+from model.address import Address
 from model.user import User
 import bcrypt
 import re
@@ -18,8 +19,10 @@ gender_service = GenderService()
 class UserService:
     @staticmethod
     def validate_user_data(user_data):
-        required_fields = ['first_name', 'last_name', 'email', 'password', 'cpf', 'phone', 'birthday',
-                           'address', 'usertype', 'gender']
+        required_fields = ['firstName', 'lastName', 'email', 'password', 'cpf', 'phone', 'birthday',
+                           'usertype', 'gender', 'zipCode', 'street', 'number', 'complement', 'complement',
+                           'city', 'state', 'country', 'cardNumber', 'typeCard', 'flag', 'bank', 'countryBank',
+                           'cardName', 'expiration', 'cvv']
 
         for field in required_fields:
             if field not in user_data:
@@ -57,6 +60,23 @@ class UserService:
         return encrypted_password
 
     @staticmethod
+    def create_new_address(zipCode, street, number, complement, neighborhood, city, state, country):
+        new_address = Address(
+            street=street,
+            number=number,
+            complement=complement,
+            neighborhood=neighborhood,
+            city=city,
+            state=state,
+            zipcode=zipCode,
+            country=country
+        )
+        if new_address:
+            return new_address
+        else:
+            raise ValueError(f"error creating new user.")
+
+    @staticmethod
     def create_new_user(user_data: User, encrypted_password, address_id, usertype_id, gender_id):
         new_user = User(
             first_name=user_data['first_name'],
@@ -91,7 +111,10 @@ class UserService:
 
             encrypted_password = UserService.encrypt_password(user_data['password'])
 
-            new_address = address_service.create_address(**user_data['address'])
+            new_address = UserService.create_new_address(user_data['zipCode'], user_data['street'], user_data['number'],
+                                                     user_data['complement'], user_data['neighborhood'],
+                                                     user_data['city'],
+                                                     user_data['state'], user_data['country'])
 
             address_id = address_repository.save_address(new_address)
 
@@ -112,4 +135,3 @@ class UserService:
                 raise ValueError(f"{e}")
             else:
                 raise ValueError(f"{e}")
-
