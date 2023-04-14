@@ -5,17 +5,17 @@ gender_repository = GenderRepository()
 
 class GenderService:
     @staticmethod
-    def validate_gender(description):
-        if description == 'Masculine':
+    def validate_gender(gender):
+        if gender == 'MASCULINE':
             return True
-        if description == 'Feminine':
+        if gender == 'FEMININE':
             return True
         else:
-            raise ValueError(f"The usertype: '{description}' not exists.")
+            raise ValueError(f"The usertype: '{gender}' not exists.")
 
     @staticmethod
-    def find_id(description):
-        gender_description_id = gender_repository.get_id_gender_by_description(description)
+    def find_id(gender):
+        gender_description_id = gender_repository.get_id_gender_by_description(gender)
         if gender_description_id is False:
-            raise ValueError(f"The gender: '{description}' not exists to found id.")
+            raise ValueError(f"The gender: '{gender}' not exists to found id.")
         return gender_description_id

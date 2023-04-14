@@ -12,13 +12,13 @@ class Address(Base):
     __tablename__ = 'addresses'
 
     id = Column(Integer, primary_key=True)
-    street = Column(String(255), nullable=False)
+    street = Column(String(100), nullable=False)
     number = Column(String(10), nullable=False)
-    complement = Column(String(255), nullable=True)
-    neighborhood = Column(String(255), nullable=False)
-    city = Column(String(255), nullable=False)
+    complement = Column(String(100), nullable=True)
+    neighborhood = Column(String(100), nullable=False)
+    city = Column(String(100), nullable=False)
     state = Column(String(2), nullable=False)
-    zipcode = Column(String(9), nullable=False)
+    zipcode = Column(String(8), nullable=False)
     country = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 

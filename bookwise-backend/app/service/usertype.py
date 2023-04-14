@@ -6,9 +6,9 @@ usertype_repository = UsertypeRepository()
 class UsertypeService:
     @staticmethod
     def validate_usertype(description):
-        if description == 'Employee':
+        if description == 'CLIENT':
             return True
-        if description == 'Admin':
+        if description == 'ADMIN':
             return True
         else:
             raise ValueError(f"The usertype: '{description}' not exists.")

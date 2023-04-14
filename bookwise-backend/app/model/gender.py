@@ -11,7 +11,7 @@ class Gender(Base):
     __tablename__ = 'genders'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    description = Column(String(50), nullable=False)
+    description = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='gender')

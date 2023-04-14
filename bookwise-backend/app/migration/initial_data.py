@@ -7,11 +7,11 @@ from configuration.database import Base, engine, Session
 def create_userType():
     session = Session()
     employee = session.query(UserType).filter_by(description='Admin').first()
-    admin = session.query(UserType).filter_by(description='Employee').first()
+    admin = session.query(UserType).filter_by(description='Client').first()
     if not employee:
         session.add(UserType(description='Admin'))
     if not admin:
-        session.add(UserType(description='Employee'))
+        session.add(UserType(description='Client'))
     session.commit()
 
 

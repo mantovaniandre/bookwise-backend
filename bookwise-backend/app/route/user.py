@@ -1,13 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from configuration.database import Session
 from controller.user import UserController
-from repository.user import UserRepository
 from util.response.user import UserReponse
 
-# created instances
 user_route = Blueprint("user_route", __name__)
+# created instances
 user_controller = UserController()
-repository = UserRepository()
 user_response = UserReponse()
 session = Session()
 
@@ -17,7 +15,9 @@ def register_user():
     try:
         user_data = request.get_json()
         user_controller.register_user(user_data)
-        return user_response.response_user_created_successfully()
+        response_successful = user_response.response_user_created_successfully()
+        return response_successful
     except Exception as e:
         exception_error = str(e)
-        return user_response.response_error_creating_user(exception_error)
+        response_error = user_response.response_error_creating_user(exception_error)
+        return response_error
