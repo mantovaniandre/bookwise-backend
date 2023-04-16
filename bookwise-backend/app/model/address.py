@@ -18,7 +18,7 @@ class Address(Base):
     neighborhood = Column(String(100), nullable=False)
     city = Column(String(100), nullable=False)
     state = Column(String(2), nullable=False)
-    zipcode = Column(String(8), nullable=False)
+    zipcode = Column(String(10), nullable=False)
     country = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 

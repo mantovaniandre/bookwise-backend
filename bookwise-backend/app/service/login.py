@@ -1,8 +1,6 @@
 import bcrypt
-
 from configuration.database import Session
 from repository.login import LoginRepository
-
 import datetime
 from flask import request, jsonify
 from functools import wraps
@@ -24,30 +22,18 @@ class LoginService:
             email_login = user_data['email']
             email_login_upper = email_login.upper()
             password_login = user_data['password']
-            password_login_encrypt = LoginService.encrypt_password(password_login)
 
             user = login_repository.get_user_by_email(email_login_upper)
             email_is_true = LoginService.verify_email(user.email)
 
-            user_password_encrypted = bcrypt.hashpw(password_login.encode('utf-8'), bcrypt.gensalt())
-            password_teste_database = user.password
-            # Comparar senhas criptografadas
-            password_from_database = "$2b$12$4WMP2QkxFnh6MP80MMfZYOivFFgHTOLZYSI0gJ2YUcqiq0V6Rh6pq"
-
-            print(password_teste_database)
-            print(password_from_database)
-            passwords_match = bcrypt.checkpw(password_login.encode('utf-8'), password_from_database.encode('utf-8'))
-
-            if passwords_match:
-                print("Senha correta!")
-            else:
-                print("Senha incorreta!")
-
-            password_is_true = LoginService.verify_password(user.password, password_login_encrypt)
+            password_is_true = LoginService.verify_password(password_login, user.password)
 
             if email_is_true and password_is_true:
-                token = LoginService.generate_token(user.id)
-                token_decode = token.decode('utf-8')
+                token = LoginService.generate_token(user)
+                if isinstance(token, bytes):
+                    token_decode = token.decode('utf-8')
+                else:
+                    token_decode = token
                 return token_decode
             else:
                 raise ValueError(f"Invalid Credential")
@@ -64,19 +50,22 @@ class LoginService:
             return False
 
     @staticmethod
-    def verify_password(password_login_encrypt, user_password):
-        password_correct = bcrypt.checkpw(password_login_encrypt.encode('utf-8'), user_password.encode('utf-8'))
+    def verify_password(password_login, user_password):
+        password_login_encoded = password_login.encode('utf-8')
+        user_password_encoded = user_password.encode('utf-8')
+        password_correct = bcrypt.checkpw(password_login_encoded, user_password_encoded)
         if password_correct:
-            return password_correct
+            return True
         else:
             raise ValueError(f"failed password check")
 
     @staticmethod
     def generate_token(user_id):
+        exp = data_time_conversion.dataTimeConversionToSaoPaulo() + datetime.timedelta(minutes=30)
         payload = {
-            'exp': data_time_conversion + datetime.timedelta(days=1),
-            'iat': data_time_conversion,
-            'sub': user_id
+            'user_id': user_id.id,
+            'first_name': user_id.first_name,
+            'exp': exp.timestamp()
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return token
