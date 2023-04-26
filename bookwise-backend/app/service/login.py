@@ -34,12 +34,17 @@ class LoginService:
                     token_decode = token.decode('utf-8')
                 else:
                     token_decode = token
+                user.token = token_decode
+                session.add(user)
+                session.commit()
                 return token_decode
             else:
                 raise ValueError(f"Invalid Credential")
         except Exception as e:
             session.rollback()
             raise ValueError(f"Internal error: {e}")
+        finally:
+            session.close()
 
     @staticmethod
     def verify_email(email):
@@ -64,7 +69,7 @@ class LoginService:
         exp = data_time_conversion.dataTimeConversionToSaoPaulo() + datetime.timedelta(minutes=30)
         payload = {
             'user_id': user_id.id,
-            'first_name': user_id.first_name,
+            'cpf': user_id.cpf,
             'exp': exp.timestamp()
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')

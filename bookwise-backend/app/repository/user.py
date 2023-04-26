@@ -22,6 +22,21 @@ class UserRepository:
             session.close()
 
     @staticmethod
+    def get_user_by_token(token):
+        try:
+            token_user = session.query(User).filter_by(token=token).first()
+            if token_user is None:
+                return False
+            else:
+                session.rollback()
+                return token_user
+        except Exception as e:
+            session.rollback()
+            raise ValueError(f"Internal data base error: {e}")
+        finally:
+            session.close()
+
+    @staticmethod
     def get_user_by_cpf(cpf):
         try:
             cpf_exists = session.query(User).filter_by(cpf=cpf).first()

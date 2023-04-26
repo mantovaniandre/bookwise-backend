@@ -44,6 +44,15 @@ class UserService:
             raise ValueError(f"Email {email} already exists.")
 
     @staticmethod
+    def validate_token(token):
+        user_token = user_repository.get_user_by_token(token)
+        if user_token:
+            return user_token.id
+        else:
+            raise ValueError(f"Token {user_token.token} is incorrect.")
+
+
+    @staticmethod
     def validate_cpf(cpf):
         cpf_exists = True
         if len(cpf) == 11:
@@ -87,7 +96,7 @@ class UserService:
         address_service.delete_address_by_id(address_id)
 
     @staticmethod
-    def register_user(user_data):
+    def create_user(user_data):
         address_id = 0
         try:
             UserService.validate_user_data(user_data)
@@ -133,3 +142,17 @@ class UserService:
                 raise ValueError(f"{e}")
             else:
                 raise ValueError(f"{e}")
+
+    @staticmethod
+    def update_user(user_data, token):
+        user_token_id = UserService.validate_token(token)
+
+        #     if user_token_id:
+        #
+        #
+        # except Exception as e:
+        #     if address_id:
+        #         UserService.validate_user_created_successfully(address_id)
+        #         raise ValueError(f"{e}")
+        #     else:
+        #         raise ValueError(f"{e}")

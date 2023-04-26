@@ -22,6 +22,7 @@ class User(Base):
     usertype_id = Column(Integer, ForeignKey('usertypes.id'))
     gender_id = Column(Integer, ForeignKey('genders.id'))
     credit_card_id = Column(Integer, ForeignKey('credit_cards.id'))
+    token = Column(String(255), nullable=True, unique=True)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     address = relationship('Address', back_populates='user')
@@ -63,6 +64,7 @@ class User(Base):
             "usertype_id": self.usertype_id,
             "gender_id": self.gender_id,
             "credit_card_id": self.credit_card_id,
+            "token": self.token,
             "last_update": data_time_conversion.dataTimeConversionToSaoPaulo(),
         }
 
