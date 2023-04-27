@@ -1,18 +1,19 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
-
 from migration.initial_data import create_tables, create_userType, drop_tables, create_gender
 from model.user import User
 from model.address import Address
 from model.usertype import UserType
 from model.gender import Gender
 from model.creditCard import CreditCard
+from model.userversion import UserVersion
 from route.login import login_route
 from route.user import user_route
 from flask_cors import CORS
+from configuration.secret_key import Config
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'mysecretkey'
+app.config.from_object(Config)
 jwt = JWTManager(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 

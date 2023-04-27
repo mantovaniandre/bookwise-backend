@@ -10,8 +10,8 @@ class UserController:
             raise ValueError(f"{e}")
 
     @staticmethod
-    def update_user(user_data, token):
+    def update_user(front_data, get_id_token):
         try:
-            UserService.update_user(user_data, token)
+            UserService.update_user(front_data, get_id_token)
         except Exception as e:
             raise ValueError(f"{e}")

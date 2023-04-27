@@ -25,10 +25,11 @@ class User(Base):
     token = Column(String(255), nullable=True, unique=True)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    address = relationship('Address', back_populates='user')
-    usertype = relationship('UserType', back_populates='user')
-    gender = relationship('Gender', back_populates='user')
-    credit_card = relationship('CreditCard', back_populates='user')
+    address = relationship('Address', back_populates='user', lazy='joined')
+    usertype = relationship('UserType', back_populates='user', lazy='joined')
+    gender = relationship('Gender', back_populates='user', lazy='joined')
+    credit_card = relationship('CreditCard', back_populates='user', lazy='joined')
+    user_versions = relationship('UserVersion', back_populates='user', lazy='joined')
 
     def __init__(self, first_name, last_name, email, password, cpf, phone, birthday, address_id, usertype_id,
                  gender_id, credit_card_id):

@@ -40,5 +40,3 @@ class AddressRepository:
             raise ValueError(f"Internal data base error: {e}")
         finally:
             session.close()
-
-

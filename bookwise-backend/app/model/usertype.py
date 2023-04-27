@@ -6,6 +6,7 @@ from util.datatime.data_time_conversion import DataTimeConversion
 
 data_time_conversion = DataTimeConversion()
 
+
 class UserType(Base):
     __tablename__ = 'usertypes'
 

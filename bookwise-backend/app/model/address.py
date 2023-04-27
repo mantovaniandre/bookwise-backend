@@ -23,6 +23,7 @@ class Address(Base):
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='address')
+    user_versions = relationship('UserVersion', back_populates='address')
 
     def __init__(self, street, number, complement, neighborhood, city, state, zipcode, country):
         self.street = street

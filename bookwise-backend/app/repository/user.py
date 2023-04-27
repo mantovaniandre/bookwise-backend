@@ -22,9 +22,9 @@ class UserRepository:
             session.close()
 
     @staticmethod
-    def get_user_by_token(token):
+    def get_user_by_id(get_id_token):
         try:
-            token_user = session.query(User).filter_by(token=token).first()
+            token_user = session.query(User).filter_by(id=get_id_token).first()
             if token_user is None:
                 return False
             else:

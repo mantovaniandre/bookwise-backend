@@ -22,6 +22,7 @@ class CreditCard(Base):
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='credit_card')
+    user_versions = relationship('UserVersion', back_populates='credit_card')
 
     def __init__(self, cardNumber, typeCard, flag, bank, countryBank, cardName, expiration, cvv):
         self.cardNumber = cardNumber
