@@ -1,4 +1,4 @@
-from model.userversion import UserVersion
+from model.user_version import UserVersion
 
 
 class UserVersionService:

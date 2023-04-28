@@ -13,7 +13,7 @@ class AddressService:
             raise ValueError(f"error deleting address id: {address_id}.")
 
     @staticmethod
-    def create_new_address(zipCode, street, number, complement, neighborhood, city, state, country):
+    def create_new_address(zip_code, street, number, complement, neighborhood, city, state, country):
         new_address = Address(
             street=street,
             number=number,
@@ -21,7 +21,7 @@ class AddressService:
             neighborhood=neighborhood,
             city=city,
             state=state,
-            zipcode=zipCode,
+            zip_code=zip_code,
             country=country
         )
         if new_address:

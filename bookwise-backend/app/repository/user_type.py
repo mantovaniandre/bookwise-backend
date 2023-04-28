@@ -1,5 +1,5 @@
 from configuration.database import Session
-from model.usertype import UserType
+from model.user_type import UserType
 
 # created instances
 session = Session()

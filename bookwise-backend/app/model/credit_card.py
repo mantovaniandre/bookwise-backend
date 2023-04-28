@@ -11,12 +11,12 @@ class CreditCard(Base):
     __tablename__ = 'credit_cards'
 
     id = Column(Integer, primary_key=True)
-    cardNumber = Column(String(20), nullable=False)
-    typeCard = Column(String(20), nullable=False)
+    card_number = Column(String(20), nullable=False)
+    type_card = Column(String(20), nullable=False)
     flag = Column(String(20), nullable=True)
     bank = Column(String(20), nullable=False)
-    countryBank = Column(String(20), nullable=False)
-    cardName = Column(String(20), nullable=False)
+    country_bank = Column(String(20), nullable=False)
+    card_name = Column(String(20), nullable=False)
     expiration = Column(String(10), nullable=False)
     cvv = Column(String(5), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
@@ -24,31 +24,31 @@ class CreditCard(Base):
     user = relationship('User', back_populates='credit_card')
     user_versions = relationship('UserVersion', back_populates='credit_card')
 
-    def __init__(self, cardNumber, typeCard, flag, bank, countryBank, cardName, expiration, cvv):
-        self.cardNumber = cardNumber
-        self.typeCard = typeCard
+    def __init__(self, card_number, type_card, flag, bank, country_bank, card_name, expiration, cvv):
+        self.card_number = card_number
+        self.type_card = type_card
         self.flag = flag
         self.bank = bank
-        self.countryBank = countryBank
-        self.cardName = cardName
+        self.country_bank = country_bank
+        self.card_name = card_name
         self.expiration = expiration
         self.cvv = cvv
         self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
 
     def __repr__(self):
-        return f"<CreditCard(id={self.id}, cardNumber='{self.cardNumber}', typeCard='{self.typeCard}', " \
-               f"flag='{self.flag}', bank='{self.bank}', countryBank='{self.countryBank}'," \
-               f"cardName='{self.cardName}', expiration='{self.expiration}', cvv='{self.cvv}')>"
+        return f"<CreditCard(id={self.id}, card_number='{self.card_number}', type_card='{self.type_card}', " \
+               f"flag='{self.flag}', bank='{self.bank}', country_bank='{self.country_bank}'," \
+               f"card_name='{self.card_name}', expiration='{self.expiration}', cvv='{self.cvv}')>"
 
     def to_dict(self):
         return {
             "id": self.id,
-            "cardNumber": self.cardNumber,
-            "typeCard": self.typeCard,
+            "card_number": self.card_number,
+            "type_card": self.type_card,
             "flag": self.flag,
             "bank": self.bank,
-            "countryBank": self.countryBank,
-            "cardName": self.cardName,
+            "country_bank": self.country_bank,
+            "card_name": self.card_name,
             "expiration": self.expiration,
             "cvv": self.cvv,
             "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()

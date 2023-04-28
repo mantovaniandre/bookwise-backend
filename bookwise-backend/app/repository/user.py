@@ -87,3 +87,28 @@ class UserRepository:
         finally:
             session.close()
 
+    @staticmethod
+    def update_user(table_name, user_id, **update_values):
+        query = f"UPDATE {table_name} SET "
+        for column, value in update_values.items():
+            query += f"{column}='{value}', "
+        query = query[:-2]
+        query += f"WHERE id = {user_id};"
+        session.execute(query)
+        session.commit()
+
+    @staticmethod
+    def update_user_usertype(table_name, user_id, usertype_id):
+        query = f"UPDATE {table_name} SET usertype = {usertype_id}"
+        query += f"WHERE id = {user_id};"
+        session.execute(query)
+        session.commit()
+
+    @staticmethod
+    def update_user_gender(table_name, user_id, usertype_id):
+        query = f"UPDATE {table_name} SET usertype = {usertype_id}"
+        query += f"WHERE id = {user_id};"
+        session.execute(query)
+        session.commit()
+
+

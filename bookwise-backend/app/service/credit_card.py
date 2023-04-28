@@ -1,4 +1,4 @@
-from model.creditCard import CreditCard
+from model.credit_card import CreditCard
 
 
 class CreditCardService:

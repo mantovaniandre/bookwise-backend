@@ -19,19 +19,19 @@ class User(Base):
     phone = Column(String(20), nullable=False)
     birthday = Column(String(10), nullable=False)
     address_id = Column(Integer, ForeignKey('addresses.id'))
-    usertype_id = Column(Integer, ForeignKey('usertypes.id'))
+    user_type_id = Column(Integer, ForeignKey('user_types.id'))
     gender_id = Column(Integer, ForeignKey('genders.id'))
     credit_card_id = Column(Integer, ForeignKey('credit_cards.id'))
     token = Column(String(255), nullable=True, unique=True)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     address = relationship('Address', back_populates='user', lazy='joined')
-    usertype = relationship('UserType', back_populates='user', lazy='joined')
+    user_type = relationship('UserType', back_populates='user', lazy='joined')
     gender = relationship('Gender', back_populates='user', lazy='joined')
     credit_card = relationship('CreditCard', back_populates='user', lazy='joined')
     user_versions = relationship('UserVersion', back_populates='user', lazy='joined')
 
-    def __init__(self, first_name, last_name, email, password, cpf, phone, birthday, address_id, usertype_id,
+    def __init__(self, first_name, last_name, email, password, cpf, phone, birthday, address_id, user_type_id,
                  gender_id, credit_card_id):
         self.first_name = first_name
         self.last_name = last_name
@@ -41,7 +41,7 @@ class User(Base):
         self.phone = phone
         self.birthday = birthday
         self.address_id = address_id
-        self.usertype_id = usertype_id
+        self.user_type_id = user_type_id
         self.gender_id = gender_id
         self.credit_card_id = credit_card_id
         self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
@@ -49,7 +49,7 @@ class User(Base):
     def __repr__(self):
         return f"<User(id={self.id}, first_name='{self.first_name}', last_name='{self.last_name}'," \
                f"email='{self.email}', password='{self.password}', cpf='{self.cpf}', phone='{self.phone}'," \
-               f"birthday='{self.birthday}', address_id='{self.address_id}', usertype_id='{self.usertype_id}'," \
+               f"birthday='{self.birthday}', address_id='{self.address_id}', user_type_id='{self.user_type_id}'," \
                f"credit_card_id='{self.credit_card_id}', last_update='{self.last_update}')>"
 
     def to_dict(self):
@@ -62,7 +62,7 @@ class User(Base):
             "phone": self.phone,
             "birthday": self.birthday.isoformat(),
             "address_id": self.address_id,
-            "usertype_id": self.usertype_id,
+            "user_type_id": self.user_type_id,
             "gender_id": self.gender_id,
             "credit_card_id": self.credit_card_id,
             "token": self.token,

@@ -1,37 +1,39 @@
 import bcrypt
 from flask import current_app
 import jwt
+
+from model.credit_card import CreditCard
 from model.user import User
 import re
 from repository.address import AddressRepository
-from repository.creditCard import CreditCardRepository
+from repository.credit_card import CreditCardRepository
+from repository.gender import GenderRepository
 from repository.user import UserRepository
-from repository.userversion import UserVersionRepository
+from repository.user_type import UsertypeRepository
 from service.address import AddressService
-from service.creditCard import CreditCardService
+from service.credit_card import CreditCardService
 from service.gender import GenderService
-from service.usertype import UsertypeService
-from service.userversion import UserVersionService
+from service.user_type import UsertypeService
 
 # created instances
 user_repository = UserRepository()
 address_repository = AddressRepository()
 address_service = AddressService()
-usertype_service = UsertypeService()
+user_type_service = UsertypeService()
+user_type_repository = UsertypeRepository()
 gender_service = GenderService()
+gender_repository = GenderRepository()
 credit_card_service = CreditCardService()
 credit_card_repository = CreditCardRepository()
-user_version_service = UserVersionService()
-user_version_repository = UserVersionRepository()
 
 
 class UserService:
     @staticmethod
     def validate_user_data(user_data):
-        required_fields = ['firstName', 'lastName', 'email', 'password', 'cpf', 'phone', 'birthday',
-                           'usertype', 'gender', 'zipCode', 'street', 'number', 'complement', 'city', 'state',
-                           'country', 'cardNumber', 'typeCard', 'flag', 'bank', 'countryBank',
-                           'cardName', 'expiration', 'cvv']
+        required_fields = ['first_name', 'last_name', 'email', 'password', 'cpf', 'phone', 'birthday',
+                           'user_type', 'gender', 'zip_code', 'street', 'number', 'complement',
+                           'neighborhood', 'city', 'state','country', 'card_number', 'type_card',
+                           'flag', 'bank', 'country_bank', 'card_name', 'expiration', 'cvv']
 
         for field in required_fields:
             if field not in user_data:
@@ -48,14 +50,6 @@ class UserService:
             raise ValueError(f"email: {email} with undefined pattern")
         if email_exists is False:
             raise ValueError(f"Email {email} already exists.")
-
-    @staticmethod
-    def validate_token(token):
-        user_token = user_repository.get_user_by_token(token)
-        if user_token:
-            return user_token.id
-        else:
-            raise ValueError(f"Token {user_token.token} is incorrect.")
 
     @staticmethod
     def validate_cpf(cpf):
@@ -77,7 +71,7 @@ class UserService:
         return encrypted_password
 
     @staticmethod
-    def create_new_user(user_data, encrypted_password, address_id, usertype_id, gender_id, credit_card_id):
+    def create_new_user(user_data, encrypted_password, address_id, user_type_id, gender_id, credit_card_id):
         new_user = User(
             first_name=user_data['firstName'],
             last_name=user_data['lastName'],
@@ -87,7 +81,7 @@ class UserService:
             phone=user_data['phone'],
             birthday=user_data['birthday'],
             address_id=address_id,
-            usertype_id=usertype_id,
+            user_type_id=user_type_id,
             gender_id=gender_id,
             credit_card_id=credit_card_id
         )
@@ -112,28 +106,33 @@ class UserService:
 
             encrypted_password = UserService.encrypt_password(user_data['password'])
 
-            new_address = address_service.create_new_address(user_data['zipCode'], user_data['street'],
+            new_address = address_service.create_new_address(user_data['zip_code'],
+                                                             user_data['street'],
                                                              user_data['number'],
-                                                             user_data['complement'], user_data['neighborhood'],
+                                                             user_data['complement'],
+                                                             user_data['neighborhood'],
                                                              user_data['city'],
-                                                             user_data['state'], user_data['country'])
+                                                             user_data['state'],
+                                                             user_data['country'])
 
             address_id = address_repository.save_address(new_address)
 
-            usertype_service.validate_usertype(user_data['usertype'])
+            user_type_service.validate_user_type(user_data['user_type'])
 
-            usertype_id = usertype_service.find_id(user_data['usertype'])
+            usertype_id = user_type_service.find_id(user_data['user_type'])
 
             gender_service.validate_gender(user_data['gender'])
 
             gender_id = gender_service.find_id(user_data['gender'])
 
-            new_credit_card = credit_card_service.create_new_credit_card(user_data['cardNumber'], user_data['typeCard'],
+            new_credit_card = credit_card_service.create_new_credit_card(user_data['card_number'],
+                                                                         user_data['type_card'],
                                                                          user_data['flag'],
                                                                          user_data['bank'],
-                                                                         user_data['countryBank'],
-                                                                         user_data['cardName'],
-                                                                         user_data['expiration'], user_data['cvv'])
+                                                                         user_data['country_bank'],
+                                                                         user_data['card_name'],
+                                                                         user_data['expiration'],
+                                                                         user_data['cvv'])
 
             credit_card_id = credit_card_repository.save_credit_card(new_credit_card)
 
@@ -150,23 +149,23 @@ class UserService:
 
     @staticmethod
     def update_user(front_data, get_id_token):
-        address_id = 0
+        different_values = {}
         try:
             user = UserRepository.get_user_by_id(get_id_token)
 
             UserService.validate_user_data(front_data)
 
-            user_data_base = {
-                "firstName": user.first_name,
-                "lastName": user.last_name,
+            supposed_old_user = {
+                "first_name": user.first_name,
+                "last_name": user.last_name,
                 "email": user.email,
                 "password": user.password,
                 "cpf": user.cpf,
                 "phone": user.phone,
                 "birthday": user.birthday,
-                "usertype": user.usertype.description,
+                "user_type": user.usertype.description,
                 "gender": user.gender.description,
-                "zipCode": user.address.zipcode,
+                "zip_code": user.address.zipcode,
                 "street": user.address.street,
                 "number": user.address.number,
                 "complement": user.address.complement,
@@ -174,27 +173,27 @@ class UserService:
                 "city": user.address.city,
                 "state": user.address.state,
                 "country": user.address.country,
-                "cardNumber": user.credit_card.cardNumber,
-                "typeCard": user.credit_card.typeCard,
+                "card_number": user.credit_card.cardNumber,
+                "type_card": user.credit_card.typeCard,
                 "flag": user.credit_card.flag,
                 "bank": user.credit_card.bank,
-                "countryBank": user.credit_card.countryBank,
-                "cardName": user.credit_card.cardName,
+                "country_bank": user.credit_card.countryBank,
+                "card_name": user.credit_card.cardName,
                 "expiration": user.credit_card.expiration,
                 "cvv": user.credit_card.cvv
             }
 
-            new_front_data = {
-                "firstName": front_data['firstName'],
-                "lastName": front_data['lastName'],
+            supposed_new_user = {
+                "first_name": front_data['firstName'],
+                "last_name": front_data['lastName'],
                 "email": front_data['email'],
                 "password": front_data['password'],
                 "cpf": front_data['cpf'],
                 "phone": front_data['phone'],
                 "birthday": front_data['birthday'],
-                "usertype": front_data['usertype'],
+                "user_type": front_data['usertype'],
                 "gender": front_data['gender'],
-                "zipCode": front_data['zipCode'],
+                "zip_code": front_data['zipCode'],
                 "street": front_data['street'],
                 "number": front_data['number'],
                 "complement": front_data['complement'],
@@ -202,64 +201,73 @@ class UserService:
                 "city": front_data['city'],
                 "state": front_data['state'],
                 "country": front_data['country'],
-                "cardNumber": front_data['cardNumber'],
-                "typeCard": front_data['typeCard'],
+                "card_number": front_data['cardNumber'],
+                "type_card": front_data['typeCard'],
                 "flag": front_data['flag'],
                 "bank": front_data['bank'],
-                "countryBank": front_data['countryBank'],
-                "cardName": front_data['cardName'],
+                "country_bank": front_data['countryBank'],
+                "card_name": front_data['cardName'],
                 "expiration": front_data['expiration'],
                 "cvv": front_data['cvv']
             }
 
-            if user_data_base == new_front_data:
+            table_map = {
+                "first_name": 'users',
+                "last_name": 'users',
+                "email": 'users',
+                "password": 'users',
+                "cpf": 'users',
+                "phone": 'users',
+                "birthday": 'users',
+                "user_type": 'user_types',
+                "gender": 'genders',
+                "zip_code": 'addresses',
+                "street": 'addresses',
+                "number": 'addresses',
+                "complement": 'addresses',
+                "neighborhood": 'addresses',
+                "city": 'addresses',
+                "state": 'addresses',
+                "country": 'addresses',
+                "card_number": 'credit_cards',
+                "type_card": 'credit_cards',
+                "flag": 'credit_cards',
+                "bank": 'credit_cards',
+                "country_bank": 'credit_cards',
+                "card_name": 'credit_cards',
+                "expiration": 'credit_cards',
+                "cvv": 'credit_cards'
+            }
 
-            else:
-                user_version = user_version_service.create_new_user_version(user.id, user.address_id,
-                                                                            user.credit_card_id, user_data_base)
+            for key, value in supposed_old_user.items():
+                if value != supposed_new_user[key]:
+                    different_values[key] = supposed_new_user[key]
+                else:
+                    raise ValueError(f"The current information is the same as the old one.")
 
-                user_version_repository.save_user_version_to_database(user_version)
+            diferente_valores = {
+                'email': 'luiz@gmail.com',
+                'gender': 'MASCULINE',
+                'user_type': 'Admin',
+                'cvv': '899'
+            }
 
-                new_address = address_service.create_new_address(front_data['zipCode'], front_data['street'],
-                                                                 front_data['number'],
-                                                                 front_data['complement'],
-                                                                 front_data['neighborhood'],
-                                                                 front_data['city'],
-                                                                 front_data['state'], front_data['country'])
-
-                address_id = address_repository.save_address(new_address)
-
-                usertype_service.validate_usertype(front_data['usertype'])
-
-                usertype_id = usertype_service.find_id(front_data['usertype'])
-
-                gender_service.validate_gender(front_data['gender'])
-
-                gender_id = gender_service.find_id(front_data['gender'])
-
-                new_credit_card = credit_card_service.create_new_credit_card(front_data['cardNumber'],
-                                                                             front_data['typeCard'],
-                                                                             front_data['flag'],
-                                                                             front_data['bank'],
-                                                                             front_data['countryBank'],
-                                                                             front_data['cardName'],
-                                                                             front_data['expiration'],
-                                                                             front_data['cvv'])
-
-                credit_card_id = credit_card_repository.save_credit_card(new_credit_card)
-
-                encrypted_password = UserService.encrypt_password(front_data['password'])
-
-                create_new_user = UserService.create_new_user
-
-                new_user = UserService.create_new_user(front_data, encrypted_password, address_id, usertype_id,
-                                                       gender_id,
-                                                       credit_card_id)
-
-                user_repository.save_user_to_database(new_user)
+            for key, value in different_values.items():
+                table = table_map[key]
+                if table == 'users':
+                    user_repository.update_user(table, user.id, **{key: value})
+                elif table == 'addresses':
+                    address_repository.update_address(table, user.address_id, **{key: value})
+                elif table == 'credit_cards':
+                    credit_card_repository.update_credit_card(table, user.credit_card_id, **{key: value})
+                elif table == 'user_types':
+                    user_type_id = user_type_repository.get_id_usertype_by_description(
+                        different_values['user_type'])
+                    user_repository.update_user_usertype(table, user.id, user_type_id)
+                elif table == 'genders':
+                    gender_id = gender_repository.get_id_gender_by_description(
+                        different_values['gender'])
+                    user_repository.update_user_gender(table, user.id, gender_id)
         except Exception as e:
-            if address_id:
-                UserService.validate_user_created_successfully(address_id)
-                raise ValueError(f"{e}")
-            else:
-                raise ValueError(f"{e}")
+            raise ValueError(f"{e}")
+

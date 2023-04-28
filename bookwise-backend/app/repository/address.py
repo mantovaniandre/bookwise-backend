@@ -40,3 +40,13 @@ class AddressRepository:
             raise ValueError(f"Internal data base error: {e}")
         finally:
             session.close()
+
+    @staticmethod
+    def update_address(table_name, address_id, **update_values):
+        query = f"UPDATE {table_name} SET "
+        for column, value in update_values.items():
+            query += f"{column}='{value}', "
+        query = query[:-2]
+        query += f"WHERE id = {address_id};"
+        session.execute(query)
+        session.commit()

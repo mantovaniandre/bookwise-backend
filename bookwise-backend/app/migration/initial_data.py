@@ -1,6 +1,6 @@
 from configuration.database import Session
 from model.gender import Gender
-from model.usertype import UserType
+from model.user_type import UserType
 from configuration.database import Base, engine, Session
 
 

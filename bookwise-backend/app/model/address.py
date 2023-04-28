@@ -18,27 +18,27 @@ class Address(Base):
     neighborhood = Column(String(100), nullable=False)
     city = Column(String(100), nullable=False)
     state = Column(String(2), nullable=False)
-    zipcode = Column(String(10), nullable=False)
+    zip_code = Column(String(10), nullable=False)
     country = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='address')
     user_versions = relationship('UserVersion', back_populates='address')
 
-    def __init__(self, street, number, complement, neighborhood, city, state, zipcode, country):
+    def __init__(self, street, number, complement, neighborhood, city, state, zip_code, country):
         self.street = street
         self.number = number
         self.complement = complement
         self.neighborhood = neighborhood
         self.city = city
         self.state = state
-        self.zipcode = zipcode
+        self.zipcode = zip_code
         self.country = country
         self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
 
     def __repr__(self):
         return f"<Address(id={self.id}, street='{self.street}', number='{self.number}', city='{self.city}', " \
-               f"state='{self.state}', zipcode='{self.zipcode}')>"
+               f"state='{self.state}', zip_code='{self.zip_code}')>"
 
     def to_dict(self):
         return {
@@ -49,7 +49,7 @@ class Address(Base):
             "neighborhood": self.neighborhood,
             "city": self.city,
             "state": self.state,
-            "zipcode": self.zipcode,
+            "zip_code": self.zip_code,
             "country": self.country,
             "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
         }
