@@ -3,14 +3,14 @@ from model.credit_card import CreditCard
 
 class CreditCardService:
     @staticmethod
-    def create_new_credit_card(cardNumber, typeCard, flag, bank, countryBank, cardName, expiration, cvv):
+    def create_new_credit_card(card_number, type_card, flag, bank, country_bank, card_name, expiration, cvv):
         new_credit_card = CreditCard(
-            cardNumber=cardNumber,
-            typeCard=typeCard,
+            card_number=card_number,
+            type_card=type_card,
             flag=flag,
             bank=bank,
-            countryBank=countryBank,
-            cardName=cardName,
+            country_bank=country_bank,
+            card_name=card_name,
             expiration=expiration,
             cvv=cvv
         )

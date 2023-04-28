@@ -64,17 +64,16 @@ class UserService:
             raise ValueError(f"CPF {cpf} already exists.")
 
     @staticmethod
-    def encrypt_password(password):
-        salt = bcrypt.gensalt(rounds=12)
-        encrypt_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        encrypted_password = encrypt_password.decode('utf-8')
-        return encrypted_password
+    def verify_password_for_update(password_front, password_back):
+        password_login_encoded = password_front.encode('utf-8')
+        user_password_encoded = password_back.encode('utf-8')
+        return bcrypt.checkpw(password_login_encoded, user_password_encoded)
 
     @staticmethod
     def create_new_user(user_data, encrypted_password, address_id, user_type_id, gender_id, credit_card_id):
         new_user = User(
-            first_name=user_data['firstName'],
-            last_name=user_data['lastName'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
             email=user_data['email'],
             password=encrypted_password,
             cpf=user_data['cpf'],
@@ -93,6 +92,13 @@ class UserService:
     @staticmethod
     def validate_user_created_successfully(address_id):
         address_service.delete_address_by_id(address_id)
+
+    @staticmethod
+    def encrypt_password(password):
+        salt = bcrypt.gensalt(rounds=12)
+        encrypt_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        encrypted_password = encrypt_password.decode('utf-8')
+        return encrypted_password
 
     @staticmethod
     def create_user(user_data):
@@ -148,10 +154,12 @@ class UserService:
                 raise ValueError(f"{e}")
 
     @staticmethod
-    def update_user(front_data, get_id_token):
+    def update_user(front_data, id_token):
         different_values = {}
+        same_values = {}
+
         try:
-            user = UserRepository.get_user_by_id(get_id_token)
+            user = UserRepository.get_user_by_id(id_token)
 
             UserService.validate_user_data(front_data)
 
@@ -163,9 +171,9 @@ class UserService:
                 "cpf": user.cpf,
                 "phone": user.phone,
                 "birthday": user.birthday,
-                "user_type": user.usertype.description,
+                "user_type": user.user_type.description,
                 "gender": user.gender.description,
-                "zip_code": user.address.zipcode,
+                "zip_code": user.address.zip_code,
                 "street": user.address.street,
                 "number": user.address.number,
                 "complement": user.address.complement,
@@ -173,27 +181,27 @@ class UserService:
                 "city": user.address.city,
                 "state": user.address.state,
                 "country": user.address.country,
-                "card_number": user.credit_card.cardNumber,
-                "type_card": user.credit_card.typeCard,
+                "card_number": user.credit_card.card_number,
+                "type_card": user.credit_card.type_card,
                 "flag": user.credit_card.flag,
                 "bank": user.credit_card.bank,
-                "country_bank": user.credit_card.countryBank,
-                "card_name": user.credit_card.cardName,
+                "country_bank": user.credit_card.country_bank,
+                "card_name": user.credit_card.card_name,
                 "expiration": user.credit_card.expiration,
                 "cvv": user.credit_card.cvv
             }
 
             supposed_new_user = {
-                "first_name": front_data['firstName'],
-                "last_name": front_data['lastName'],
+                "first_name": front_data['first_name'],
+                "last_name": front_data['last_name'],
                 "email": front_data['email'],
                 "password": front_data['password'],
                 "cpf": front_data['cpf'],
                 "phone": front_data['phone'],
                 "birthday": front_data['birthday'],
-                "user_type": front_data['usertype'],
+                "user_type": front_data['user_type'],
                 "gender": front_data['gender'],
-                "zip_code": front_data['zipCode'],
+                "zip_code": front_data['zip_code'],
                 "street": front_data['street'],
                 "number": front_data['number'],
                 "complement": front_data['complement'],
@@ -201,12 +209,12 @@ class UserService:
                 "city": front_data['city'],
                 "state": front_data['state'],
                 "country": front_data['country'],
-                "card_number": front_data['cardNumber'],
-                "type_card": front_data['typeCard'],
+                "card_number": front_data['card_number'],
+                "type_card": front_data['type_card'],
                 "flag": front_data['flag'],
                 "bank": front_data['bank'],
-                "country_bank": front_data['countryBank'],
-                "card_name": front_data['cardName'],
+                "country_bank": front_data['country_bank'],
+                "card_name": front_data['card_name'],
                 "expiration": front_data['expiration'],
                 "cvv": front_data['cvv']
             }
@@ -240,34 +248,35 @@ class UserService:
             }
 
             for key, value in supposed_old_user.items():
-                if value != supposed_new_user[key]:
+                if key == 'password':
+                    if UserService.verify_password_for_update(supposed_new_user['password'], value):
+                        same_values[key] = value
+                    else:
+                        different_values[key] =  UserService.encrypt_password(supposed_new_user['password'])
+                elif value != supposed_new_user[key]:
                     different_values[key] = supposed_new_user[key]
                 else:
-                    raise ValueError(f"The current information is the same as the old one.")
+                    same_values[key] = supposed_new_user[key]
 
-            diferente_valores = {
-                'email': 'luiz@gmail.com',
-                'gender': 'MASCULINE',
-                'user_type': 'Admin',
-                'cvv': '899'
-            }
-
-            for key, value in different_values.items():
-                table = table_map[key]
-                if table == 'users':
-                    user_repository.update_user(table, user.id, **{key: value})
-                elif table == 'addresses':
-                    address_repository.update_address(table, user.address_id, **{key: value})
-                elif table == 'credit_cards':
-                    credit_card_repository.update_credit_card(table, user.credit_card_id, **{key: value})
-                elif table == 'user_types':
-                    user_type_id = user_type_repository.get_id_usertype_by_description(
-                        different_values['user_type'])
-                    user_repository.update_user_usertype(table, user.id, user_type_id)
-                elif table == 'genders':
-                    gender_id = gender_repository.get_id_gender_by_description(
-                        different_values['gender'])
-                    user_repository.update_user_gender(table, user.id, gender_id)
+            if not different_values:
+                raise ValueError(f"The data is the same as in the database..")
+            else:
+                for key, value in different_values.items():
+                    table = table_map[key]
+                    if table == 'users':
+                        user_repository.update_user(table, user.id, **{key: value})
+                    elif table == 'addresses':
+                        address_repository.update_address(table, user.address_id, **{key: value})
+                    elif table == 'credit_cards':
+                        credit_card_repository.update_credit_card(table, user.credit_card_id, **{key: value})
+                    elif table == 'user_types':
+                        user_type_id = user_type_repository.get_id_usertype_by_description(
+                            different_values['user_type'])
+                        user_repository.update_user_usertype(table, user.id, user_type_id)
+                    elif table == 'genders':
+                        gender_id = gender_repository.get_id_gender_by_description(
+                            different_values['gender'])
+                        user_repository.update_user_gender(table, user.id, gender_id)
         except Exception as e:
             raise ValueError(f"{e}")
 

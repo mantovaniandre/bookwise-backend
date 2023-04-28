@@ -32,7 +32,7 @@ class Address(Base):
         self.neighborhood = neighborhood
         self.city = city
         self.state = state
-        self.zipcode = zip_code
+        self.zip_code = zip_code
         self.country = country
         self.last_update = data_time_conversion.dataTimeConversionToSaoPaulo()
 

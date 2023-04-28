@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from configuration.database import Session
 from controller.user import UserController
 from util.response.user import UserReponse
@@ -29,8 +30,8 @@ def create_user():
 def update_user():
     try:
         front_data = request.get_json()
-        get_id_token = get_jwt_identity()
-        user_controller.update_user(front_data, get_id_token)
+        id_token = get_jwt_identity()
+        user_controller.update_user(front_data, id_token)
         response_successful = user_response.response_user_updated_successfully()
         return response_successful
     except Exception as e:

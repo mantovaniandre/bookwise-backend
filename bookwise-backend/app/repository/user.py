@@ -1,5 +1,7 @@
 from configuration.database import Session
 from model.user import User
+from sqlalchemy.orm import joinedload
+from sqlalchemy import text
 
 # created instances
 session = Session()
@@ -22,17 +24,24 @@ class UserRepository:
             session.close()
 
     @staticmethod
-    def get_user_by_id(get_id_token):
+    def get_user_by_id(user_id):
         try:
-            token_user = session.query(User).filter_by(id=get_id_token).first()
-            if token_user is None:
-                return False
-            else:
-                session.rollback()
-                return token_user
+            user = session.query(User).options(
+                joinedload(User.address),
+                joinedload(User.user_type),
+                joinedload(User.gender),
+                joinedload(User.credit_card)
+            ).filter_by(id=user_id).first()
+
+            if user is None:
+                raise ValueError(f"User not found with id {user_id}")
+
+            return user
+
         except Exception as e:
             session.rollback()
-            raise ValueError(f"Internal data base error: {e}")
+            raise ValueError(f"Internal database error: {e}")
+
         finally:
             session.close()
 
@@ -93,7 +102,8 @@ class UserRepository:
         for column, value in update_values.items():
             query += f"{column}='{value}', "
         query = query[:-2]
-        query += f"WHERE id = {user_id};"
+        query += f" WHERE id = {user_id};"
+        query = text(query)
         session.execute(query)
         session.commit()
 
@@ -101,6 +111,7 @@ class UserRepository:
     def update_user_usertype(table_name, user_id, usertype_id):
         query = f"UPDATE {table_name} SET usertype = {usertype_id}"
         query += f"WHERE id = {user_id};"
+        query = text(query)
         session.execute(query)
         session.commit()
 
@@ -108,6 +119,7 @@ class UserRepository:
     def update_user_gender(table_name, user_id, usertype_id):
         query = f"UPDATE {table_name} SET usertype = {usertype_id}"
         query += f"WHERE id = {user_id};"
+        query = text(query)
         session.execute(query)
         session.commit()
 
