@@ -1,7 +1,12 @@
+from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
 from configuration.database import Session
 from model.user import User
 from sqlalchemy.orm import joinedload
 from sqlalchemy import text
+
+from util.exception.custom_exception import UserNotFoundEmailError, DatabaseError, UserNotFoundIdError, UserCPFError, \
+    UserCreationError
 
 # created instances
 session = Session()
@@ -9,19 +14,40 @@ session = Session()
 
 class UserRepository:
     @staticmethod
-    def get_user_by_email(email):
+    def get_user_by_email_to_validate_email_exist(email):
         try:
-            email_exists = session.query(User).filter_by(email=email).first()
-            if email_exists is None:
+            user = session.query(User).filter_by(email=email).first()
+            if user is None:
                 return True
             else:
-                session.rollback()
                 return False
-        except Exception as e:
+        except SQLAlchemyError as e:
             session.rollback()
-            raise ValueError(f"Internal data base error: {e}")
+            raise DatabaseError(str(e))
         finally:
             session.close()
+
+    @staticmethod
+    def get_user_by_cpf_to_update(cpf):
+        query = text('SELECT * FROM users WHERE cpf=:cpf')
+        values = {'cpf': cpf}
+        try:
+            result = session.execute(query, values)
+            user_data = result.fetchone()
+        except Exception as e:
+            raise DatabaseError(str(e))
+        return user_data
+
+    @staticmethod
+    def get_user_by_email_to_update(email):
+        query = text('SELECT * FROM users WHERE email=:email')
+        values = {'email': email}
+        try:
+            result = session.execute(query, values)
+            user_data = result.fetchone()
+        except Exception as e:
+            raise DatabaseError(str(e))
+        return user_data
 
     @staticmethod
     def get_user_by_id(user_id):
@@ -32,31 +58,26 @@ class UserRepository:
                 joinedload(User.gender),
                 joinedload(User.credit_card)
             ).filter_by(id=user_id).first()
-
-            if user is None:
-                raise ValueError(f"User not found with id {user_id}")
-
+            if not user:
+                raise UserNotFoundIdError(user_id)
             return user
-
-        except Exception as e:
+        except SQLAlchemyError as e:
             session.rollback()
-            raise ValueError(f"Internal database error: {e}")
-
+            raise DatabaseError(str(e))
         finally:
             session.close()
 
     @staticmethod
-    def get_user_by_cpf(cpf):
+    def get_user_by_cpf_to_validate_cpf_exist(cpf):
         try:
-            cpf_exists = session.query(User).filter_by(cpf=cpf).first()
-            if cpf_exists is None:
+            user = session.query(User).filter_by(cpf=cpf).first()
+            if user is None:
                 return True
             else:
-                session.rollback()
                 return False
         except Exception as e:
             session.rollback()
-            raise ValueError(f"Internal data base error: {e}")
+            raise DatabaseError(str(e))
         finally:
             session.close()
 
@@ -71,56 +92,57 @@ class UserRepository:
                 return True
             else:
                 session.rollback()
-                return False
+                raise UserCreationError()
         except Exception as e:
             session.rollback()
-            raise ValueError(f"Internal data base error: {e}")
-        finally:
-            session.close()
-
-    @staticmethod
-    def save_usertype(new_usertype):
-        try:
-            session.add(new_usertype)
-            session.commit()
-            session.refresh(new_usertype)
-            usertype_id = new_usertype.id
-            if usertype_id is not None:
-                return usertype_id
-            else:
-                session.rollback()
-                return False
-        except Exception as e:
-            session.rollback()
-            raise ValueError(f"Internal data base error: {e}")
+            raise DatabaseError(str(e))
         finally:
             session.close()
 
     @staticmethod
     def update_user(table_name, user_id, **update_values):
-        query = f"UPDATE {table_name} SET "
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        query = f"UPDATE {table_name} SET last_update = '{now}', "
         for column, value in update_values.items():
-            query += f"{column}='{value}', "
+            query += f"{column} = '{value}', "
         query = query[:-2]
         query += f" WHERE id = {user_id};"
         query = text(query)
-        session.execute(query)
-        session.commit()
+        try:
+            session.execute(query)
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
 
     @staticmethod
-    def update_user_usertype(table_name, user_id, usertype_id):
-        query = f"UPDATE {table_name} SET usertype = {usertype_id}"
-        query += f"WHERE id = {user_id};"
-        query = text(query)
-        session.execute(query)
-        session.commit()
+    def update_user_type_of_user(table_users, user_id, user_type_id):
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            query = f"UPDATE {table_users} SET user_type_id = {user_type_id}, last_update = '{now}' "
+            query += f" WHERE id = {user_id};"
+            query = text(query)
+            session.execute(query)
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
 
     @staticmethod
-    def update_user_gender(table_name, user_id, usertype_id):
-        query = f"UPDATE {table_name} SET usertype = {usertype_id}"
-        query += f"WHERE id = {user_id};"
-        query = text(query)
-        session.execute(query)
-        session.commit()
-
-
+    def update_gender_of_user(table_users, user_id, gender_id):
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            query = f"UPDATE {table_users} SET gender_id = {gender_id}, last_update = '{now}' "
+            query += f" WHERE id = {user_id};"
+            query = text(query)
+            session.execute(query)
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()

@@ -11,18 +11,17 @@ class CreditCard(Base):
     __tablename__ = 'credit_cards'
 
     id = Column(Integer, primary_key=True)
-    card_number = Column(String(20), nullable=False)
-    type_card = Column(String(20), nullable=False)
+    card_number = Column(String(16), nullable=False)
+    type_card = Column(String(50), nullable=False)
     flag = Column(String(20), nullable=True)
     bank = Column(String(20), nullable=False)
     country_bank = Column(String(20), nullable=False)
-    card_name = Column(String(20), nullable=False)
-    expiration = Column(String(10), nullable=False)
-    cvv = Column(String(5), nullable=False)
+    card_name = Column(String(50), nullable=False)
+    expiration = Column(String(7), nullable=False)
+    cvv = Column(String(3), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='credit_card')
-    user_versions = relationship('UserVersion', back_populates='credit_card')
+    user = relationship('User', back_populates='credit_card', lazy='joined')
 
     def __init__(self, card_number, type_card, flag, bank, country_bank, card_name, expiration, cvv):
         self.card_number = card_number

@@ -1,4 +1,5 @@
 from repository.user_type import UsertypeRepository
+from util.exception.custom_exception import InvalidUserTypeError, UserTypeNotFoundError
 
 usertype_repository = UsertypeRepository()
 
@@ -11,11 +12,11 @@ class UsertypeService:
         if description == 'ADMIN':
             return True
         else:
-            raise ValueError(f"The user_type: '{description}' not exists.")
+            raise InvalidUserTypeError(description)
 
     @staticmethod
     def find_id(description):
-        usertype_description_id = usertype_repository.get_id_usertype_by_description(description)
+        usertype_description_id = usertype_repository.get_id_user_type_by_description(description)
         if usertype_description_id is False:
-            raise ValueError(f"The user_type: '{description}' not exists to found id.")
+            raise UserTypeNotFoundError(description)
         return usertype_description_id

@@ -11,10 +11,10 @@ class UserType(Base):
     __tablename__ = 'user_types'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    description = Column(String(20), nullable=False)
+    description = Column(String(10), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='user_type')
+    user = relationship('User', back_populates='user_type', lazy='joined')
 
     def __init__(self, **kwargs):
         self.description = kwargs.get('description')

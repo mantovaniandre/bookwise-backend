@@ -1,5 +1,6 @@
 from model.address import Address
 from repository.address import AddressRepository
+from util.exception.custom_exception import AddressDeletionError
 
 address_repository = AddressRepository()
 
@@ -9,8 +10,10 @@ class AddressService:
     @staticmethod
     def delete_address_by_id(address_id):
         address_exists = address_repository.delete_address_by_id(address_id)
-        if address_exists is False:
-            raise ValueError(f"error deleting address id: {address_id}.")
+        if address_exists:
+            return True
+        else:
+            raise AddressDeletionError(address_id)
 
     @staticmethod
     def create_new_address(zip_code, street, number, complement, neighborhood, city, state, country):
@@ -27,4 +30,4 @@ class AddressService:
         if new_address:
             return new_address
         else:
-            raise ValueError(f"error creating new address.")
+            raise AddressCreationError()

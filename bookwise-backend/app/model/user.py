@@ -15,8 +15,8 @@ class User(Base):
     last_name = Column(String(20), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    cpf = Column(String(20), nullable=False, unique=True)
-    phone = Column(String(20), nullable=False)
+    cpf = Column(String(11), nullable=False, unique=True)
+    phone = Column(String(13), nullable=False)
     birthday = Column(String(10), nullable=False)
     address_id = Column(Integer, ForeignKey('addresses.id'))
     user_type_id = Column(Integer, ForeignKey('user_types.id'))
@@ -29,7 +29,6 @@ class User(Base):
     user_type = relationship('UserType', back_populates='user', lazy='joined')
     gender = relationship('Gender', back_populates='user', lazy='joined')
     credit_card = relationship('CreditCard', back_populates='user', lazy='joined')
-    user_versions = relationship('UserVersion', back_populates='user', lazy='joined')
 
     def __init__(self, first_name, last_name, email, password, cpf, phone, birthday, address_id, user_type_id,
                  gender_id, credit_card_id):

@@ -1,4 +1,5 @@
 from model.credit_card import CreditCard
+from util.exception.custom_exception import CreditCardCreateError
 
 
 class CreditCardService:
@@ -17,4 +18,4 @@ class CreditCardService:
         if new_credit_card:
             return new_credit_card
         else:
-            raise ValueError(f"error creating new credit card.")
+            raise CreditCardCreateError()

@@ -5,6 +5,8 @@ import datetime
 from flask import current_app
 from util.datatime.data_time_conversion import DataTimeConversion
 import jwt
+from util.exception.custom_exception import MissingCredentialsError, InvalidCredentialsError, InternalError, \
+    PasswordCheckError, TokenGenerationError
 
 # created instances
 session = Session()
@@ -15,19 +17,19 @@ data_time_conversion = DataTimeConversion()
 
 class LoginService:
     @staticmethod
-    def login(user_data):
+    def login(request_data):
         try:
-            email_login = user_data.get('email')
-            password_login = user_data.get('password')
+            email_login = request_data.get('email')
+            password_login = request_data.get('password')
 
             if not email_login or not password_login:
-                raise ValueError("Email and password are required")
+                raise MissingCredentialsError("Email and password are required")
 
             email_login_upper = email_login.upper()
             user = login_repository.get_user_by_email(email_login_upper)
 
             if not user:
-                raise ValueError("Invalid Credential")
+                raise InvalidCredentialsError("Invalid Credential")
 
             password_is_true = LoginService.verify_password(password_login, user.password)
 
@@ -39,20 +41,12 @@ class LoginService:
                 session.commit()
                 return token
             else:
-                raise ValueError("Invalid Credential")
+                raise InvalidCredentialsError("Invalid Credential")
         except Exception as e:
             session.rollback()
-            raise ValueError(f"Internal error: {e}")
+            raise InternalError(str(e))
         finally:
             session.close()
-
-    @staticmethod
-    def verify_email(email):
-        email_exists = login_repository.get_user_by_email(email)
-        if email_exists:
-            return True
-        else:
-            return False
 
     @staticmethod
     def verify_password(password_login, user_password):
@@ -62,15 +56,19 @@ class LoginService:
         if password_correct:
             return True
         else:
-            raise ValueError(f"failed password check")
+            raise PasswordCheckError()
 
     @staticmethod
     def generate_token(user, secret_key):
-        exp = data_time_conversion.dataTimeConversionToSaoPaulo() + datetime.timedelta(minutes=30)
-        payload = {
-            'sub': user.id,
-            'cpf': user.cpf,
-            'exp': exp.timestamp()
-        }
-        token = jwt.encode(payload, secret_key, algorithm='HS256')
-        return token
+        try:
+            exp = data_time_conversion.dataTimeConversionToSaoPaulo() + datetime.timedelta(minutes=30)
+            payload = {
+                'sub': user.id,
+                'cpf': user.cpf,
+                'exp': exp.timestamp()
+            }
+            token = jwt.encode(payload, secret_key, algorithm='HS256')
+            return token
+        except Exception as e:
+            raise TokenGenerationError(str(e))
+

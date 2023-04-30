@@ -11,10 +11,10 @@ class Gender(Base):
     __tablename__ = 'genders'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    description = Column(String(20), nullable=False)
+    description = Column(String(10), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='gender')
+    user = relationship('User', back_populates='gender', lazy='joined')
 
     def __init__(self, **kwargs):
         self.description = kwargs.get('description')

@@ -1,8 +1,4 @@
 import bcrypt
-from flask import current_app
-import jwt
-
-from model.credit_card import CreditCard
 from model.user import User
 import re
 from repository.address import AddressRepository
@@ -14,6 +10,10 @@ from service.address import AddressService
 from service.credit_card import CreditCardService
 from service.gender import GenderService
 from service.user_type import UsertypeService
+from util.exception.custom_exception import MissingRequiredFieldError, InvalidEmailFormatError, DuplicateEmailError, \
+    InvalidPasswordError, NewUserCreationError, \
+    AddressDeletionError, PasswordEncryptionError, AddressValidationError, UserCreationError, UserUpdateError, \
+    CPFHasToHaveOnlyNumbers, InvalidFieldLengthError, DuplicateCPFError, SameDataInDatabaseException
 
 # created instances
 user_repository = UserRepository()
@@ -29,45 +29,60 @@ credit_card_repository = CreditCardRepository()
 
 class UserService:
     @staticmethod
-    def validate_user_data(user_data):
+    def validate_user_data_and_field_sizes(request_data):
         required_fields = ['first_name', 'last_name', 'email', 'password', 'cpf', 'phone', 'birthday',
                            'user_type', 'gender', 'zip_code', 'street', 'number', 'complement',
-                           'neighborhood', 'city', 'state','country', 'card_number', 'type_card',
+                           'neighborhood', 'city', 'state', 'country', 'card_number', 'type_card',
                            'flag', 'bank', 'country_bank', 'card_name', 'expiration', 'cvv']
 
+        max_lengths = {'first_name': 20, 'last_name': 20, 'email': 50, 'password': 255, 'cpf': 11,
+                       'phone': 13, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 8,
+                       'street': 100, 'number': 6, 'complement': 100, 'neighborhood': 50, 'city': 50,
+                       'state': 2, 'country': 20, 'card_number': 16, 'type_card': 50, 'flag': 20,
+                       'bank': 20, 'country_bank': 20, 'card_name': 50, 'expiration': 7, 'cvv': 3}
+
         for field in required_fields:
-            if field not in user_data:
-                raise ValueError(f"Required field '{field}' not provided.")
-            elif not user_data[field]:
-                raise ValueError(f"Field '{field}' cannot be empty.")
+            if field not in request_data:
+                raise MissingRequiredFieldError(field)
+            elif not request_data[field]:
+                raise MissingRequiredFieldError(field)
+            if field in max_lengths and len(request_data[field]) > max_lengths[field]:
+                raise InvalidFieldLengthError(field, max_lengths[field])
 
     @staticmethod
-    def validate_email(email):
+    def validate_format_and_unique_email(email):
         standard = r"[^@]+@[^@]+\.[^@]+"
-        if re.match(standard, email):
-            email_exists = user_repository.get_user_by_email(email)
-        else:
-            raise ValueError(f"email: {email} with undefined pattern")
-        if email_exists is False:
-            raise ValueError(f"Email {email} already exists.")
+        if not re.match(standard, email):
+            raise InvalidEmailFormatError(email)
+        if not user_repository.get_user_by_email_to_validate_email_exist(email):
+            raise DuplicateEmailError(email)
 
     @staticmethod
-    def validate_cpf(cpf):
-        cpf_exists = True
-        if len(cpf) == 11:
-            cpf_exists = user_repository.get_user_by_cpf(cpf)
-        elif len(cpf) > 11:
-            raise ValueError(f"The cpf {cpf} is greater than 14 digits")
-        elif len(cpf) < 11:
-            raise ValueError(f"The cpf {cpf} is less than 14 digits")
-        if cpf_exists is False:
-            raise ValueError(f"CPF {cpf} already exists.")
+    def validate_cpf_email_to_update_user(user_id, cpf, email):
+        cpf_exists = user_repository.get_user_by_cpf_to_update(cpf)
+        email_exists = user_repository.get_user_by_email_to_update(email)
+        if cpf_exists and cpf_exists.id != user_id:
+            raise DuplicateCPFError(cpf)
+        if email_exists and email_exists.id != user_id:
+            raise DuplicateEmailError(email)
+
+    @staticmethod
+    def validate_format_and_unique_cpf(cpf):
+        if not cpf.isdigit():
+            raise CPFHasToHaveOnlyNumbers()
+        cpf_exists = user_repository.get_user_by_cpf_to_validate_cpf_exist(cpf)
+        if not cpf_exists:
+            raise DuplicateCPFError(cpf)
+        else:
+            return True
 
     @staticmethod
     def verify_password_for_update(password_front, password_back):
         password_login_encoded = password_front.encode('utf-8')
         user_password_encoded = password_back.encode('utf-8')
-        return bcrypt.checkpw(password_login_encoded, user_password_encoded)
+        if bcrypt.checkpw(password_login_encoded, user_password_encoded):
+            return True
+        return False
 
     @staticmethod
     def create_new_user(user_data, encrypted_password, address_id, user_type_id, gender_id, credit_card_id):
@@ -87,81 +102,69 @@ class UserService:
         if new_user:
             return new_user
         else:
-            raise ValueError(f"error creating new user.")
+            raise NewUserCreationError()
 
     @staticmethod
-    def validate_user_created_successfully(address_id):
-        address_service.delete_address_by_id(address_id)
+    def delete_address_if_user_not_created(address_id):
+        if not address_service.delete_address_by_id(address_id):
+            raise AddressDeletionError(address_id)
 
     @staticmethod
     def encrypt_password(password):
-        salt = bcrypt.gensalt(rounds=12)
-        encrypt_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        encrypted_password = encrypt_password.decode('utf-8')
-        return encrypted_password
+        try:
+            salt = bcrypt.gensalt(rounds=12)
+            encrypt_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+            encrypted_password = encrypt_password.decode('utf-8')
+            return encrypted_password
+        except Exception as e:
+            raise PasswordEncryptionError(str(e))
 
     @staticmethod
-    def create_user(user_data):
+    def create_user(request_data):
         address_id = 0
         try:
-            UserService.validate_user_data(user_data)
-
-            UserService.validate_email(user_data['email'])
-
-            UserService.validate_cpf(user_data['cpf'])
-
-            encrypted_password = UserService.encrypt_password(user_data['password'])
-
-            new_address = address_service.create_new_address(user_data['zip_code'],
-                                                             user_data['street'],
-                                                             user_data['number'],
-                                                             user_data['complement'],
-                                                             user_data['neighborhood'],
-                                                             user_data['city'],
-                                                             user_data['state'],
-                                                             user_data['country'])
-
+            UserService.validate_user_data_and_field_sizes(request_data)
+            UserService.validate_format_and_unique_email(request_data['email'])
+            UserService.validate_format_and_unique_cpf(request_data['cpf'])
+            encrypted_password = UserService.encrypt_password(request_data['password'])
+            new_address = address_service.create_new_address(request_data['zip_code'], request_data['street'],
+                                                             request_data['number'], request_data['complement'],
+                                                             request_data['neighborhood'], request_data['city'],
+                                                             request_data['state'], request_data['country'])
             address_id = address_repository.save_address(new_address)
-
-            user_type_service.validate_user_type(user_data['user_type'])
-
-            usertype_id = user_type_service.find_id(user_data['user_type'])
-
-            gender_service.validate_gender(user_data['gender'])
-
-            gender_id = gender_service.find_id(user_data['gender'])
-
-            new_credit_card = credit_card_service.create_new_credit_card(user_data['card_number'],
-                                                                         user_data['type_card'],
-                                                                         user_data['flag'],
-                                                                         user_data['bank'],
-                                                                         user_data['country_bank'],
-                                                                         user_data['card_name'],
-                                                                         user_data['expiration'],
-                                                                         user_data['cvv'])
-
-            credit_card_id = credit_card_repository.save_credit_card(new_credit_card)
-
-            new_user = UserService.create_new_user(user_data, encrypted_password, address_id, usertype_id, gender_id,
+            user_type_service.validate_user_type(request_data['user_type'])
+            usertype_id = user_type_service.find_id(request_data['user_type'])
+            gender_service.validate_gender(request_data['gender'])
+            gender_id = gender_service.find_id(request_data['gender'])
+            credit_card = credit_card_service.create_new_credit_card(request_data['card_number'],
+                                                                     request_data['type_card'],
+                                                                     request_data['flag'],
+                                                                     request_data['bank'],
+                                                                     request_data['country_bank'],
+                                                                     request_data['card_name'],
+                                                                     request_data['expiration'],
+                                                                     request_data['cvv'])
+            credit_card_id = credit_card_repository.save_credit_card(credit_card)
+            new_user = UserService.create_new_user(request_data, encrypted_password, address_id, usertype_id, gender_id,
                                                    credit_card_id)
-
-            user_repository.save_user_to_database(new_user)
-        except Exception as e:
-            if address_id:
-                UserService.validate_user_created_successfully(address_id)
-                raise ValueError(f"{e}")
+            user_save = user_repository.save_user_to_database(new_user)
+            if user_save:
+                return True
             else:
-                raise ValueError(f"{e}")
+                UserService.delete_address_if_user_not_created(address_id)
+        except Exception as e:
+            raise e
 
     @staticmethod
-    def update_user(front_data, id_token):
+    def update_user(request_data, id_token):
         different_values = {}
         same_values = {}
-
         try:
             user = UserRepository.get_user_by_id(id_token)
-
-            UserService.validate_user_data(front_data)
+            UserService.validate_user_data_and_field_sizes(request_data)
+            UserService.validate_cpf_email_to_update_user(user.id, request_data['cpf'], request_data['email'])
+            user_type_service.validate_user_type(request_data['user_type'])
+            gender_service.validate_gender(request_data['gender'])
 
             supposed_old_user = {
                 "first_name": user.first_name,
@@ -192,31 +195,31 @@ class UserService:
             }
 
             supposed_new_user = {
-                "first_name": front_data['first_name'],
-                "last_name": front_data['last_name'],
-                "email": front_data['email'],
-                "password": front_data['password'],
-                "cpf": front_data['cpf'],
-                "phone": front_data['phone'],
-                "birthday": front_data['birthday'],
-                "user_type": front_data['user_type'],
-                "gender": front_data['gender'],
-                "zip_code": front_data['zip_code'],
-                "street": front_data['street'],
-                "number": front_data['number'],
-                "complement": front_data['complement'],
-                "neighborhood": front_data['neighborhood'],
-                "city": front_data['city'],
-                "state": front_data['state'],
-                "country": front_data['country'],
-                "card_number": front_data['card_number'],
-                "type_card": front_data['type_card'],
-                "flag": front_data['flag'],
-                "bank": front_data['bank'],
-                "country_bank": front_data['country_bank'],
-                "card_name": front_data['card_name'],
-                "expiration": front_data['expiration'],
-                "cvv": front_data['cvv']
+                "first_name": request_data['first_name'],
+                "last_name": request_data['last_name'],
+                "email": request_data['email'],
+                "password": request_data['password'],
+                "cpf": request_data['cpf'],
+                "phone": request_data['phone'],
+                "birthday": request_data['birthday'],
+                "user_type": request_data['user_type'],
+                "gender": request_data['gender'],
+                "zip_code": request_data['zip_code'],
+                "street": request_data['street'],
+                "number": request_data['number'],
+                "complement": request_data['complement'],
+                "neighborhood": request_data['neighborhood'],
+                "city": request_data['city'],
+                "state": request_data['state'],
+                "country": request_data['country'],
+                "card_number": request_data['card_number'],
+                "type_card": request_data['type_card'],
+                "flag": request_data['flag'],
+                "bank": request_data['bank'],
+                "country_bank": request_data['country_bank'],
+                "card_name": request_data['card_name'],
+                "expiration": request_data['expiration'],
+                "cvv": request_data['cvv']
             }
 
             table_map = {
@@ -252,15 +255,18 @@ class UserService:
                     if UserService.verify_password_for_update(supposed_new_user['password'], value):
                         same_values[key] = value
                     else:
-                        different_values[key] =  UserService.encrypt_password(supposed_new_user['password'])
-                elif value != supposed_new_user[key]:
-                    different_values[key] = supposed_new_user[key]
+                        different_values[key] = UserService.encrypt_password(supposed_new_user['password'])
                 else:
-                    same_values[key] = supposed_new_user[key]
-
+                    new_value_upper = supposed_new_user[key].upper()
+                    old_value_upper = value.upper() if value else None
+                    if new_value_upper != old_value_upper:
+                        different_values[key] = new_value_upper
+                    else:
+                        same_values[key] = new_value_upper
             if not different_values:
-                raise ValueError(f"The data is the same as in the database..")
+                raise SameDataInDatabaseException()
             else:
+                table_users = 'users'
                 for key, value in different_values.items():
                     table = table_map[key]
                     if table == 'users':
@@ -270,13 +276,13 @@ class UserService:
                     elif table == 'credit_cards':
                         credit_card_repository.update_credit_card(table, user.credit_card_id, **{key: value})
                     elif table == 'user_types':
-                        user_type_id = user_type_repository.get_id_usertype_by_description(
+                        user_type_id = user_type_repository.get_id_user_type_by_description(
                             different_values['user_type'])
-                        user_repository.update_user_usertype(table, user.id, user_type_id)
+                        user_repository.update_user_type_of_user(table_users, user.id, user_type_id)
                     elif table == 'genders':
                         gender_id = gender_repository.get_id_gender_by_description(
                             different_values['gender'])
-                        user_repository.update_user_gender(table, user.id, gender_id)
+                        user_repository.update_gender_of_user(table_users, user.id, gender_id)
+            return True
         except Exception as e:
-            raise ValueError(f"{e}")
-
+            raise e

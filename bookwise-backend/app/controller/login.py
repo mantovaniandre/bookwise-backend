@@ -1,16 +1,20 @@
 from service.login import LoginService
+from util.exception.custom_exception import MissingCredentialsError, InvalidCredentialsError, InternalError
 
 login_service = LoginService()
 
 
 class LoginController:
     @staticmethod
-    def login(user_data):
+    def login(request_data):
         try:
-            token = login_service.login(user_data)
+            token = login_service.login(request_data)
             return token
-        except Exception as e:
-            raise ValueError(f"{e}")
-
+        except MissingCredentialsError as e:
+            raise MissingCredentialsError()
+        except InvalidCredentialsError as e:
+            raise InvalidCredentialsError()
+        except InternalError as e:
+            raise InternalError(str(e))
 
 
