@@ -1,7 +1,5 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
-
-from configuration.database import engine
 from migration.initial_data import create_tables, create_user_type, drop_tables, create_gender
 from model.user import User
 from model.address import Address
@@ -22,7 +20,7 @@ app.register_blueprint(user_route)
 app.register_blueprint(login_route)
 
 if __name__ == "__main__":
-    drop_tables()
+    # drop_tables()
     create_tables()
     create_user_type()
     create_gender()

@@ -23,3 +23,12 @@ class UserController:
         except Exception as e:
             session.rollback()
             raise e
+
+    @staticmethod
+    def get_profile_user(id_token):
+        try:
+            user = UserService.get_profile_user(id_token)
+            return user
+        except Exception as e:
+            session.rollback()
+            raise e

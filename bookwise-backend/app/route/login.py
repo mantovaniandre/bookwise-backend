@@ -18,9 +18,6 @@ def login():
         token = login_controller.login(request_data)
         response_successful = login_response.response_login_successful(token)
         return response_successful
-    except LoginError as e:
-        response_error = login_response.response_error_login(str(e))
-        return response_error
     except Exception as e:
         response_error = login_response.response_error_login(str(e))
         return response_error

@@ -35,11 +35,11 @@ class UserService:
                            'neighborhood', 'city', 'state', 'country', 'card_number', 'type_card',
                            'flag', 'bank', 'country_bank', 'card_name', 'expiration', 'cvv']
 
-        max_lengths = {'first_name': 20, 'last_name': 20, 'email': 50, 'password': 255, 'cpf': 11,
-                       'phone': 13, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 8,
-                       'street': 100, 'number': 6, 'complement': 100, 'neighborhood': 50, 'city': 50,
-                       'state': 2, 'country': 20, 'card_number': 16, 'type_card': 50, 'flag': 20,
-                       'bank': 20, 'country_bank': 20, 'card_name': 50, 'expiration': 7, 'cvv': 3}
+        max_lengths = {'first_name': 20, 'last_name': 20, 'email': 50, 'password': 255, 'cpf': 14,
+                       'phone': 11, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 9,
+                       'street': 100, 'number': 6, 'complement': 50, 'neighborhood': 50, 'city': 50,
+                       'state': 2, 'country': 6, 'card_number': 19, 'type_card': 10, 'flag': 20,
+                       'bank': 50, 'country_bank': 20, 'card_name': 30, 'expiration': 7, 'cvv': 3}
 
         for field in required_fields:
             if field not in request_data:
@@ -284,5 +284,18 @@ class UserService:
                             different_values['gender'])
                         user_repository.update_gender_of_user(table_users, user.id, gender_id)
             return True
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def get_profile_user(id_token):
+        try:
+            user = UserRepository.get_user_by_id(id_token)
+            address = AddressRepository.get_address_by_id_of_user(user.id)
+            credit_card = CreditCardRepository.get_credit_card_by_id_of_user(user.id)
+            user_dict = user.to_dict()
+            user_dict['address'] = address.to_dict()
+            user_dict['credit_card'] = credit_card.to_dict()
+            return user_dict
         except Exception as e:
             raise e

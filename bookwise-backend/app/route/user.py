@@ -42,3 +42,19 @@ def update_user():
         return response_error
     finally:
         session.close()
+
+
+@user_route.route('/profile', methods=['GET'])
+@jwt_required()
+def get_user_profile():
+    try:
+        id_token = get_jwt_identity()
+        user = user_controller.get_profile_user(id_token)
+        response_successful = user_response.response_get_user_profile_successfully(user)
+        return response_successful
+    except Exception as e:
+        session.rollback()
+        response_error = user_response.response_error_updating_user(str(e))
+        return response_error
+    finally:
+        session.close()

@@ -28,6 +28,15 @@ class UserReponse:
         return response
 
     @staticmethod
+    def response_get_user_profile_successfully(user):
+        data = {"message": "profile sent successfully",
+                "status": "201",
+                "content_type": "application/json",
+                "user": user}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
     def response_error_updating_user(exception_error):
         data = {"message": exception_error,
                 "status": "400",

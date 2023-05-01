@@ -59,7 +59,7 @@ class LoginError(Exception):
 
 
 class MissingCredentialsError(Exception):
-    def __init__(self, message="Email and password are required."):
+    def __init__(self, message="Email and password are required"):
         self.message = message
         super().__init__(self.message)
 
@@ -103,7 +103,7 @@ class CPFHasToHaveOnlyNumbers(Exception):
 class UserNotFoundIdError(Exception):
     def __init__(self, user_id):
         self.user_id = user_id
-        super().__init__(f"User with {user_id} not found.")
+        super().__init__(f"User with ID {user_id} not found.")
 
 
 class InvalidCpfSizeError(ValueError):

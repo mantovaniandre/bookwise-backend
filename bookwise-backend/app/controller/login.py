@@ -1,7 +1,8 @@
+from configuration.database import Session
 from service.login import LoginService
-from util.exception.custom_exception import MissingCredentialsError, InvalidCredentialsError, InternalError
 
 login_service = LoginService()
+session = Session()
 
 
 class LoginController:
@@ -10,11 +11,8 @@ class LoginController:
         try:
             token = login_service.login(request_data)
             return token
-        except MissingCredentialsError as e:
-            raise MissingCredentialsError()
-        except InvalidCredentialsError as e:
-            raise InvalidCredentialsError()
-        except InternalError as e:
-            raise InternalError(str(e))
+        except Exception as e:
+            session.rollback()
+            raise e
 
 

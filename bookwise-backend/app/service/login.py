@@ -23,13 +23,13 @@ class LoginService:
             password_login = request_data.get('password')
 
             if not email_login or not password_login:
-                raise MissingCredentialsError("Email and password are required")
+                raise MissingCredentialsError()
 
             email_login_upper = email_login.upper()
             user = login_repository.get_user_by_email(email_login_upper)
 
             if not user:
-                raise InvalidCredentialsError("Invalid Credential")
+                raise InvalidCredentialsError()
 
             password_is_true = LoginService.verify_password(password_login, user.password)
 
@@ -41,10 +41,10 @@ class LoginService:
                 session.commit()
                 return token
             else:
-                raise InvalidCredentialsError("Invalid Credential")
+                raise InvalidCredentialsError()
         except Exception as e:
             session.rollback()
-            raise InternalError(str(e))
+            raise e
         finally:
             session.close()
 

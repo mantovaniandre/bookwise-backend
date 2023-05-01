@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from configuration.database import Session
+from model.credit_card import CreditCard
 from util.exception.custom_exception import DatabaseError, CreditCardSaveError
 
 # created instances
@@ -40,6 +41,20 @@ class CreditCardRepository:
             session.execute(query)
             session.commit()
         except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
+
+    @staticmethod
+    def get_credit_card_by_id_of_user(user_id):
+        try:
+            credit_card = session.query(CreditCard).filter_by(id=user_id).first()
+            if credit_card is not None:
+                return credit_card
+            else:
+                return False
+        except Exception as e:
             session.rollback()
             raise DatabaseError(str(e))
         finally:

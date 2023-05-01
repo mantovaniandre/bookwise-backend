@@ -27,7 +27,7 @@ class UserType(Base):
         return {
             "id": self.id,
             "description": self.description,
-            "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
+            "last_update": str(data_time_conversion.dataTimeConversionToSaoPaulo())
         }
 
 

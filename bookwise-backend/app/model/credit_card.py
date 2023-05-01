@@ -11,12 +11,12 @@ class CreditCard(Base):
     __tablename__ = 'credit_cards'
 
     id = Column(Integer, primary_key=True)
-    card_number = Column(String(16), nullable=False)
-    type_card = Column(String(50), nullable=False)
+    card_number = Column(String(19), nullable=False)
+    type_card = Column(String(10), nullable=False)
     flag = Column(String(20), nullable=True)
-    bank = Column(String(20), nullable=False)
+    bank = Column(String(50), nullable=False)
     country_bank = Column(String(20), nullable=False)
-    card_name = Column(String(50), nullable=False)
+    card_name = Column(String(30), nullable=False)
     expiration = Column(String(7), nullable=False)
     cvv = Column(String(3), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
@@ -50,5 +50,5 @@ class CreditCard(Base):
             "card_name": self.card_name,
             "expiration": self.expiration,
             "cvv": self.cvv,
-            "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
+            "last_update": str(data_time_conversion.dataTimeConversionToSaoPaulo())
         }

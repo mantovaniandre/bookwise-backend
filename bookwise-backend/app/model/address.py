@@ -14,12 +14,12 @@ class Address(Base):
     id = Column(Integer, primary_key=True)
     street = Column(String(100), nullable=False)
     number = Column(String(6), nullable=False)
-    complement = Column(String(100), nullable=True)
+    complement = Column(String(50), nullable=True)
     neighborhood = Column(String(50), nullable=False)
     city = Column(String(50), nullable=False)
     state = Column(String(2), nullable=False)
-    zip_code = Column(String(8), nullable=False)
-    country = Column(String(20), nullable=False)
+    zip_code = Column(String(9), nullable=False)
+    country = Column(String(6), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='address', lazy='joined')
@@ -50,5 +50,5 @@ class Address(Base):
             "state": self.state,
             "zip_code": self.zip_code,
             "country": self.country,
-            "last_update": data_time_conversion.dataTimeConversionToSaoPaulo()
+            "last_update": str(data_time_conversion.dataTimeConversionToSaoPaulo())
         }

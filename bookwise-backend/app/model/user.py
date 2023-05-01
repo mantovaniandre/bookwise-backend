@@ -15,8 +15,8 @@ class User(Base):
     last_name = Column(String(20), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    cpf = Column(String(11), nullable=False, unique=True)
-    phone = Column(String(13), nullable=False)
+    cpf = Column(String(14), nullable=False, unique=True)
+    phone = Column(String(11), nullable=False)
     birthday = Column(String(10), nullable=False)
     address_id = Column(Integer, ForeignKey('addresses.id'))
     user_type_id = Column(Integer, ForeignKey('user_types.id'))
@@ -57,14 +57,16 @@ class User(Base):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
+            "password": self.password,
             "cpf": self.cpf,
             "phone": self.phone,
-            "birthday": self.birthday.isoformat(),
+            "birthday": self.birthday,
             "address_id": self.address_id,
             "user_type_id": self.user_type_id,
             "gender_id": self.gender_id,
             "credit_card_id": self.credit_card_id,
             "token": self.token,
-            "last_update": data_time_conversion.dataTimeConversionToSaoPaulo(),
+            "last_update": str(data_time_conversion.dataTimeConversionToSaoPaulo())
         }
+
 

@@ -61,4 +61,16 @@ class AddressRepository:
         finally:
             session.close()
 
-
+    @staticmethod
+    def get_address_by_id_of_user(user_id):
+        try:
+            address = session.query(Address).filter_by(id=user_id).first()
+            if address is not None:
+                return address
+            else:
+                return False
+        except Exception as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
