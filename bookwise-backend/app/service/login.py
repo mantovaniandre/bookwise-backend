@@ -65,7 +65,7 @@ class LoginService:
             payload = {
                 'sub': user.id,
                 'cpf': user.cpf,
-                'exp': exp.timestamp()
+                'expiration': exp.timestamp()
             }
             token = jwt.encode(payload, secret_key, algorithm='HS256')
             return token

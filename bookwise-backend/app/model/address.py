@@ -13,13 +13,13 @@ class Address(Base):
 
     id = Column(Integer, primary_key=True)
     street = Column(String(100), nullable=False)
-    number = Column(String(6), nullable=False)
+    number = Column(String(20), nullable=False)
     complement = Column(String(50), nullable=True)
     neighborhood = Column(String(50), nullable=False)
     city = Column(String(50), nullable=False)
-    state = Column(String(2), nullable=False)
-    zip_code = Column(String(9), nullable=False)
-    country = Column(String(6), nullable=False)
+    state = Column(String(20), nullable=False)
+    zip_code = Column(String(20), nullable=False)
+    country = Column(String(20), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
     user = relationship('User', back_populates='address', lazy='joined')
