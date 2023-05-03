@@ -3,12 +3,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from configuration.database import Session
 from controller.user import UserController
 from util.exception.custom_exception import UserCreationError, UserUpdateError
-from util.response.user import UserReponse
+from util.response.user import UserResponse
 
 user_route = Blueprint("user_route", __name__)
 # created instances
 user_controller = UserController()
-user_response = UserReponse()
+user_response = UserResponse()
 session = Session()
 
 

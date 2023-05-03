@@ -94,6 +94,11 @@ class UserNotFoundEmailError(Exception):
         super().__init__(f"User with {email} not found.")
 
 
+class BooksNotFoundError(Exception):
+    def __init__(self):
+        super().__init__(f"Books not found.")
+
+
 class CPFHasToHaveOnlyNumbers(Exception):
     def __init__(self, message="CPF should contain only numbers."):
         self.message = message
@@ -104,6 +109,12 @@ class UserNotFoundIdError(Exception):
     def __init__(self, user_id):
         self.user_id = user_id
         super().__init__(f"User with ID {user_id} not found.")
+
+
+class BookNotFoundIdError(Exception):
+    def __init__(self, book_id):
+        self.user_id = book_id
+        super().__init__(f"The book {book_id} not found.")
 
 
 class InvalidCpfSizeError(ValueError):

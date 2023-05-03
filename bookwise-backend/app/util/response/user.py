@@ -2,7 +2,7 @@ from flask import Response
 import json
 
 
-class UserReponse:
+class UserResponse:
     @staticmethod
     def response_user_created_successfully():
         data = {"message": "user created successfully",

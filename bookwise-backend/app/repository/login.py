@@ -17,7 +17,7 @@ class LoginRepository:
             return user
         except SQLAlchemyError as e:
             session.rollback()
-            raise DatabaseError(f"Internal database error: {e}")
+            raise DatabaseError(str(e))
         finally:
             session.close()
 

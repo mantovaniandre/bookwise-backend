@@ -1,7 +1,5 @@
 from controller.login import LoginController
 from flask import request, Blueprint
-
-from util.exception.custom_exception import LoginError
 from util.response.login import LoginResponse
 
 
