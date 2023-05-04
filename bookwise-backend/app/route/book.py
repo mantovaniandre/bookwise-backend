@@ -1,5 +1,7 @@
 from flask import Blueprint, request
-from controller.book import BookController
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from controller.book import BookController, session
 from util.response.book import BookResponse
 
 book_route = Blueprint("book_route", __name__)
@@ -27,4 +29,21 @@ def get_books_by_id(book_id):
     except Exception as e:
         response_error = book_response.response_error_get_book(str(e))
         return response_error
+
+
+@book_route.route('/updateBookById/<request_book_id>', methods=['PUT'])
+@jwt_required()
+def update_book(request_book_id):
+    try:
+        request_data = request.get_json()
+        id_user_token = get_jwt_identity()
+        book_controller.update_book(request_data, id_user_token, request_book_id)
+        response_successful = book_response.response_book_updated_successfully()
+        return response_successful
+    except Exception as e:
+        session.rollback()
+        response_error = book_response.response_error_updating_book(str(e))
+        return response_error
+    finally:
+        session.close()
 

@@ -113,8 +113,14 @@ class UserNotFoundIdError(Exception):
 
 class BookNotFoundIdError(Exception):
     def __init__(self, book_id):
-        self.user_id = book_id
+        self.book_id = book_id
         super().__init__(f"The book {book_id} not found.")
+
+
+class UserCannotUpdateBooks(Exception):
+    def __init__(self, user_id):
+        self.user_id = user_id
+        super().__init__(f"user the id {user_id} cannot update books.")
 
 
 class InvalidCpfSizeError(ValueError):
@@ -147,6 +153,10 @@ class InvalidFieldLengthError(Exception):
         self.max_length = max_length
         super().__init__(f"The field '{field_name}' has an invalid length. Maximum length allowed is {max_length}.")
 
+
+class IsbnAlreadyExistsException(Exception):
+    def __init__(self):
+        super().__init__(f"The isbn already exists.")
 
 class NewUserCreationError(Exception):
     def __init__(self, message="Error creating new user."):

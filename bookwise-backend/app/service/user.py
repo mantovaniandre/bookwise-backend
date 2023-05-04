@@ -39,7 +39,7 @@ class UserService:
                        'phone': 11, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 9,
                        'street': 100, 'number': 6, 'complement': 50, 'neighborhood': 50, 'city': 50,
                        'state': 2, 'country': 6, 'card_number': 19, 'type_card': 10, 'flag': 20,
-                       'bank': 50, 'country_bank': 20, 'card_name': 30, 'expiration': 7, 'cvv': 3}
+                       'bank': 50, 'country_bank': 30, 'card_name': 30, 'expiration': 7, 'cvv': 3}
 
         for field in required_fields:
             if field not in request_data:

@@ -23,3 +23,12 @@ class BookController:
         except Exception as e:
             session.rollback()
             raise e
+
+    @staticmethod
+    def update_book(request_data, id_user_token, request_book_id):
+        try:
+            book_service.update_book(request_data, id_user_token, request_book_id)
+            return True
+        except Exception as e:
+            session.rollback()
+            raise e

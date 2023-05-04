@@ -36,16 +36,20 @@ def insert_books(books: list[Book]):
                 print(f"Skipping book with ISBN {book_isbn} - already exists in database")
             else:
                 book.title = book.title.upper()
+                book.year = book.year.upper()
                 book.author = book.author.upper()
-                book.isbn = book_isbn
+                book.isbn = book_isbn.upper()
                 book.edition = book.edition.upper()
                 book.origin = book.origin.upper()
                 book.book_format = book.book_format.upper()
                 book.binding = book.binding.upper()
                 book.language = book.language.upper()
                 book.country = book.country.upper()
+                book.pages = book.pages.upper()
+                book.stock = book.stock.upper()
                 book.url_img = book.url_img
                 book.description = book.description.upper()
+                book.price = book.price.upper()
                 book.category = book.category.upper()
                 session.add(book)
         session.commit()

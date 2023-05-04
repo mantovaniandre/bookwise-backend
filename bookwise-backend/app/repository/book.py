@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from configuration.database import Session
@@ -36,3 +39,27 @@ class BookRepository:
             raise DatabaseError(str(e))
         finally:
             session.close()
+
+    @staticmethod
+    def update_book(book_id, **update_values):
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        query = f"UPDATE books SET last_update = '{now}', "
+        for column, value in update_values.items():
+            query += f"{column} = '{value}', "
+        query = query[:-2]
+        query += f" WHERE id = {book_id};"
+        query = text(query)
+        try:
+            session.execute(query)
+            session.commit()
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
+
+    @staticmethod
+    def verify_book_by_isbn(isbn):
+        book = session.query(Book).filter_by(isbn=isbn).first()
+        return book
+

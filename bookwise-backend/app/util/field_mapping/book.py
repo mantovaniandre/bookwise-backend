@@ -4,7 +4,7 @@ books = [
     Book(
         title="The Hunger Games",
         author="Suzanne Collins",
-        year=2008,
+        year='2008',
         isbn="9780439023481",
         edition="1st",
         origin="USA",
@@ -12,38 +12,38 @@ books = [
         binding="Sewn Binding",
         language="English",
         country="United States",
-        pages=384,
-        stock=100,
+        pages='384',
+        stock='100',
         url_img="https://m.media-amazon.com/images/I/414fBKKVniL._SY344_BO1,204,203,200_QL70_ML2_.jpg",
-        description="In a dystopian North America, Katniss volunteers to compete in a televised survival game, "
-                    "replacing her younger sister. The game is run by the rulers of Panem to maintain control over "
-                    "the twelve districts.",
-        price=22.45,
+        description="In A Dystopian North America Katniss Volunteers To Compete In A Televised Survival "
+                    "Game Replacing Her Younger Sister The Game Is Run By The Rulers Of Panem To Maintain "
+                    "Control Over The Twelve Districts.",
+        price='22.45',
         category="Adventure"
         ),
     Book(
         title="The Da Vinci Code",
         author="Dan Brown",
-        year=2003,
+        year='2003',
         isbn="9780307474278",
         edition="1st", origin="USA",
         book_format="ebook",
         binding="Perfect Binding",
         language="English",
         country="United States",
-        pages=689,
-        stock=50,
+        pages='689',
+        stock='50',
         url_img="https://m.media-amazon.com/images/I/51hYdKyWYqL._SY346_.jpg",
-        description="Professor Robert Langdon and cryptographer Sophie Neve must decipher a deadly web of deceit "
-                    "involving the works of Leonardo da Vinci after the curator of the Louvre is found murdered in "
-                    "the museum's halls.",
-        price=12.13,
+        description="Professor Robert Langdon And Cryptographer Sophie Neve Must Decipher A Deadly "
+                    "Web Of Deceit Involving The Works Of Leonardo Da Vinci After The Curator Of The "
+                    "Louvre Is Found Murdered In The Museums Halls.",
+        price='12.13',
         category="Adventure"
         ),
     Book(
         title="The Lord of the Rings: The Fellowship of the Ring",
         author="J.R.R. Tolkien",
-        year=1954,
+        year='1954',
         isbn="9780547928210",
         edition="1st",
         origin="United Kingdom",
@@ -51,18 +51,18 @@ books = [
         binding="Sewn Binding",
         language="English",
         country="United Kingdom",
-        pages=432,
-        stock=80,
+        pages='432',
+        stock='80',
         url_img="https://m.media-amazon.com/images/I/61mn09OvTQL._AC_UY327_FMwebp_QL65_.jpg",
-        description="The first volume in J.R.R. Tolkien's epic adventure, The Lord of the Rings. One Ring to "
-                    "rule them all, One Ring to find them, One Ring to bring them all and in the darkness bind them.",
-        price=25.33,
+        description="The First Volume In Jrr Tolkiens Epic Adventure The Lord Of The Rings One Ring To Rule "
+                    "Them All One Ring To Find Them One Ring To Bring Them All And In The Darkness Bind Them.",
+        price='25.33',
         category="Adventure"
         ),
     Book(
         title="Jurassic Park",
         author="Michael Crichton",
-        year=1990,
+        year='1990',
         isbn="9780345538987",
         edition="1st",
         origin="USA",
@@ -70,18 +70,18 @@ books = [
         binding="Perfect Binding",
         language="English",
         country="United States",
-        pages=448,
-        stock=60,
+        pages='448',
+        stock='60',
         url_img="https://m.media-amazon.com/images/I/81rBVCDfrgL._AC_UY327_FMwebp_QL65_.jpg",
-        description="Jurassic Park: Scientists clone dinosaur DNA to create a theme park with extinct creatures, but "
-                    "when the security system fails, the dinosaurs escape.",
-        price=14.55,
+        description="Jurassic Park Scientists Clone Dinosaur Dna To Create A Theme Park With Extinct Creatures But "
+                    "When The Security System Fails The Dinosaurs Escape.",
+        price='14.55',
         category="Adventure"
         ),
     Book(
         title='The Treasure Island',
         author='Robert Louis Stevenson',
-        year=1883,
+        year='1883',
         isbn='9780198063267',
         edition='2nd Revised edition',
         origin='United Kingdom',
@@ -89,17 +89,17 @@ books = [
         binding='Perfect',
         language='English',
         country='UK',
-        pages=304,
-        stock=10,
+        pages='304',
+        stock='10',
         url_img='https://m.media-amazon.com/images/I/81fvZDUsehL._AC_UY327_FMwebp_QL65_.jpg',
-        description="The first-person story of Jim Hawkins, whose peaceful life at his mother's inn is disrupted by "
-                    "pirates seeking the treasure of Captain Flint. Jim sets out with allies to find it.",
-        price=16.98,
+        description="The First-person Story Of Jim Hawkins, Whose Peaceful Life At His Mother's Inn Is Disrupted By "
+                    "Pirates Seeking The Treasure Of Captain Flint. Jim Sets Out With Allies To Find It.",
+        price='16.98',
         category="Adventure"
         ),
     Book(title='The Call of the Wild',
          author='Jack London',
-         year=1903,
+         year='1903',
          isbn='9780199553976',
          edition='1st Edition',
          origin='United States',
@@ -107,18 +107,18 @@ books = [
          binding='Perfect',
          language='English',
          country='USA',
-         pages=128,
-         stock=7,
+         pages='128',
+         stock='7',
          url_img='https://m.media-amazon.com/images/I/81acMmy33yL._AC_UY327_FMwebp_QL65_.jpg',
-         description="The Call of the Wild follows Buck, a domesticated dog, who must adapt to survive as an Alaskan "
-                     "sled dog and becomes aleader in the wild.",
-         price=15.95,
+         description="The Call Of The Wild Follows Buck A Domesticated Dog Who Must Adapt To Survive As An Alaskan "
+                     "Sled Dog And Becomes Aleader In The Wild.",
+         price='15.95',
          category="Adventure"
          ),
     Book(
         title='The Lost City of the Monkey God',
         author='Douglas Preston',
-        year=2017,
+        year='2017',
         isbn='9781455540013',
         edition='1st Edition',
         origin='United States',
@@ -126,18 +126,18 @@ books = [
         binding='Sewn binding',
         language='English',
         country='USA',
-        pages=336,
-        stock=10,
+        pages='336',
+        stock='10',
         url_img='https://m.media-amazon.com/images/I/91m2dauZjCL._AC_UY327_FMwebp_QL65_.jpg',
-        description='A five-hundred-year-old legend. An ancient curse. A stunning medical mystery. '
-                    'And a pioneering journey into the unknown heart of the world\'s densest jungle.',
-        price=28.46,
+        description="A Five-hundred-year-old Legend. An Ancient Curse. A Stunning Medical Mystery. And A Pioneering "
+                    "Journey Into The Unknown Heart Of The World's Densest Jungle.",
+        price='28.46',
         category="Adventure"
         ),
     Book(
         title="The Hobbit",
         author="J.R.R. Tolkien",
-        year=1937,
+        year='1937',
         isbn="9780547928227",
         edition="1st",
         origin="UK",
@@ -145,18 +145,18 @@ books = [
         binding="Perfect",
         language="English",
         country="United Kingdom",
-        pages=310,
-        stock=50,
+        pages='310',
+        stock='50',
         url_img="https://m.media-amazon.com/images/I/91M9xPIf10L._AC_UY327_FMwebp_QL65_.jpg",
-        description="The hobbit Bilbo Baggins embarks on an epic adventure with a group of dwarves to reclaim their "
-                    "stolen treasure from a dragon.",
-        price=15.40,
+        description="The Hobbit Bilbo Baggins Embarks On An Epic Adventure With A Group Of Dwarves To Reclaim "
+                    "Their Stolen Treasure From A Dragon.",
+        price='15.40',
         category="Adventure"
         ),
     Book(
         title='Pride and Prejudice',
         author='Jane Austen',
-        year=1813,
+        year='1813',
         isbn='9780486284736',
         edition='1st Edition',
         origin='United Kingdom',
@@ -164,18 +164,18 @@ books = [
         binding='Perfect',
         language='English',
         country='UK',
-        pages=352,
-        stock=10,
+        pages='352',
+        stock='10',
         url_img='https://m.media-amazon.com/images/I/81FOTF7SJvL._AC_UY327_FMwebp_QL65_.jpg',
-        description="Jane Austen's classic love story between Elizabeth Bennet and Mr. Darcy, where love blooms "
-                    "(sometimes against their own pride and prejudices).",
-        price=12.56,
+        description="Jane Austens Classic Love Story Between Elizabeth Bennet And Mr Darcy Where Love Blooms Sometimes "
+                    "Against Their Own Pride And Prejudices.",
+        price='12.56',
         category="Romance"
         ),
     Book(
         title='Jane Eyre',
         author='Charlotte Bronte',
-        year=1847,
+        year='1847',
         isbn='9780141441146',
         edition='Reprint',
         origin='United Kingdom',
@@ -183,18 +183,18 @@ books = [
         binding='Perfect',
         language='English',
         country='UK',
-        pages=624,
-        stock=5,
+        pages='624',
+        stock='5',
         url_img='https://m.media-amazon.com/images/I/911HhiTClmS._AC_UY327_FMwebp_QL65_.jpg',
-        description="Jane Eyre is the story of a young governess who falls in love with her brooding and "
-                    "mysterious employer, Mr. Rochester.",
-        price=8.99,
+        description="Jane Eyre Is The Story Of A Young Governess Who Falls In Love With Her Brooding And "
+                    "Mysterious Employer Mr Rochester.",
+        price='8.99',
         category="Romance"
         ),
     Book(
         title='Wuthering Heights',
         author='Emily Bronte',
-        year=1847,
+        year='1847',
         isbn='9780141439556',
         edition='Reprint',
         origin='United Kingdom',
@@ -202,19 +202,18 @@ books = [
         binding='Perfect',
         language='English',
         country='UK',
-        pages=416,
-        stock=8,
+        pages='416',
+        stock='8',
         url_img='https://m.media-amazon.com/images/I/91rViXWBDNL._AC_UY327_FMwebp_QL65_.jpg',
-        description="Wuthering Heights is Emily Bronte's only novel. It is a story of Heathcliff, a "
-                    "dark outsider who falls in love with the spirited Cathy but cannot have her, destroying them "
-                    "both in the process.",
-        price=7.55,
+        description="Wuthering Heights Is Emily Brontes Only Novel It Is A Story Of Heathcliff A Dark Outsider Who "
+                    "Falls In Love With The Spirited Cathy But Cannot Have Her Destroying Them Both In The Process.",
+        price='7.55',
         category="Romance"
         ),
     Book(
         title='Outlander',
         author='Diana Gabaldon',
-        year=1991,
+        year='1991',
         isbn='9780440212560',
         edition='Reprint',
         origin='United States',
@@ -222,19 +221,19 @@ books = [
         binding='Perfect',
         language='English',
         country='USA',
-        pages=896,
-        stock=15,
+        pages='896',
+        stock='15',
         url_img='https://m.media-amazon.com/images/I/91tjikkfB6L._AC_UY327_FMwebp_QL65_.jpg',
-        description="Outlander is a historical romance novel by Diana Gabaldon. It follows the story of Claire "
-                    "Randall, a combat nurse from 1945 who is transported back in time to 1743 Scotland where she "
-                    "falls in love with the young warrior Jamie Fraser.",
-        price=16.99,
+        description="Outlander Is A Historical Romance Novel By Diana Gabaldon It Follows The Story Of Claire Randall "
+                    "A Combat Nurse From 1945 Who Is Transported Back In Time To 1743 Scotland Where She Falls In Love "
+                    "With The Young Warrior Jamie Fraser.",
+        price='16.99',
         category="Romance"
         ),
     Book(
         title="The Time Traveler's Wife",
         author="Audrey Niffenegger",
-        year=2003,
+        year='2003',
         isbn="9780156029438",
         edition="1st Edition",
         origin="United States",
@@ -242,19 +241,19 @@ books = [
         binding="Paperback",
         language="English",
         country="USA",
-        pages=546,
-        stock=12,
+        pages='546',
+        stock='12',
         url_img="https://m.media-amazon.com/images/I/81ilgC2Cw4S._AC_UY327_FMwebp_QL65_.jpg",
-        description="The Time Traveler's Wife is a novel about a man named Henry DeTamble who suffers from a "
-                    "genetic disorder that causes him to time travel involuntarily, and his wife Clare Abshire, "
-                    "who has known him since she was six years old.",
-        price=12.99,
+        description="The Time Traveler's Wife Is A Novel About A Man Named Henry Detamble Who Suffers From A Genetic "
+                    "Disorder That Causes Him To Time Travel Involuntarily, And His Wife Clare Abshire, Who Has Known "
+                    "Him Since She Was Six Years Old.",
+        price='12.99',
         category="Romance"
         ),
     Book(
         title='The Fault in Our Stars',
         author='John Green',
-        year=2012,
+        year='2012',
         isbn='9780525478812',
         edition='1st Edition',
         origin='United States',
@@ -262,18 +261,18 @@ books = [
         binding='Hardcover',
         language='English',
         country='USA',
-        pages=336,
-        stock=9,
+        pages='336',
+        stock='9',
         url_img='https://m.media-amazon.com/images/I/81a4kCNuH+L._AC_UY327_FMwebp_QL65_.jpg',
-        description="The Fault in Our Stars is a story about two teenagers, Hazel Grace Lancaster and "
-                    "Augustus Waters, who fall in love after meeting at a cancer support group.",
-        price=10.99,
+        description="The Fault In Our Stars Is A Story About Two Teenagers, Hazel Grace Lancaster And Augustus Waters, "
+                    "Who Fall In Love After Meeting At A Cancer Support Group.",
+        price='10.99',
         category="Romance"
         ),
     Book(
         title='The Notebook',
         author='Nicholas Sparks',
-        year=1996,
+        year='1996',
         isbn='9780446520802',
         edition='1st Edition',
         origin='United States',
@@ -281,19 +280,19 @@ books = [
         binding='Trade Paperback',
         language='English',
         country='USA',
-        pages=272,
-        stock=5,
+        pages='272',
+        stock='5',
         url_img='https://m.media-amazon.com/images/I/81OHCNjv7HL._AC_UY327_FMwebp_QL65_.jpg',
-        description="The Notebook is a love story about a man named Noah Calhoun who falls in love with a woman "
-                    "named Allie Hamilton. The story is set in the 1940s in the coastal town of Seabrook, "
+        description="The Notebook Is A Love Story About A Man Named Noah Calhoun Who Falls In Love With A Woman "
+                    "Named Allie Hamilton. The Story Is Set In The 1940s In The Coastal Town Of Seabrook, "
                     "North Carolina.",
-        price=8.99,
+        price='8.99',
         category="Romance"
         ),
     Book(
         title='Me Before You',
         author='Jojo Moyes',
-        year=2012,
+        year='2012',
         isbn='9780670026609',
         edition='1st Edition',
         origin='United Kingdom',
@@ -301,13 +300,13 @@ books = [
         binding='Hardcover',
         language='English',
         country='UK',
-        pages=400,
-        stock=2,
+        pages='400',
+        stock='2',
         url_img='https://m.media-amazon.com/images/I/71B1dTlYH5L._AC_UY327_FMwebp_QL65_.jpg',
-        description="Me Before You is a story about a woman named Louisa Clark who becomes a "
-                    "caregiver for a man named Will Traynor, who is quadriplegic after a motorcycle accident. "
-                    "The story follows their relationship as they help each other see the beauty in life.",
-        price=14.99,
+        description="Me Before You Is A Story About A Woman Named Louisa Clark Who Becomes A Caregiver For A Man "
+                    "Named Will Traynor, Who Is Quadriplegic After A Motorcycle Accident. The Story Follows Their "
+                    "Relationship As They Help Each Other See The Beauty In Life.",
+        price='14.99',
         category="Romance"
         )
 ]

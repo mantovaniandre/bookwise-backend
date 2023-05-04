@@ -100,13 +100,13 @@ class UserRepository:
             session.close()
 
     @staticmethod
-    def update_user(table_name, user_id, **update_values):
+    def update_user(table_name, book_id, **update_values):
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         query = f"UPDATE {table_name} SET last_update = '{now}', "
         for column, value in update_values.items():
             query += f"{column} = '{value}', "
         query = query[:-2]
-        query += f" WHERE id = {user_id};"
+        query += f" WHERE id = {book_id};"
         query = text(query)
         try:
             session.execute(query)

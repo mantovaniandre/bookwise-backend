@@ -15,7 +15,7 @@ class CreditCard(Base):
     type_card = Column(String(20), nullable=False)
     flag = Column(String(20), nullable=True)
     bank = Column(String(50), nullable=False)
-    country_bank = Column(String(20), nullable=False)
+    country_bank = Column(String(30), nullable=False)
     card_name = Column(String(30), nullable=False)
     expiration = Column(String(10), nullable=False)
     cvv = Column(String(10), nullable=False)
