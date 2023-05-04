@@ -156,11 +156,11 @@ class UserService:
             raise e
 
     @staticmethod
-    def update_user(request_data, id_token):
+    def update_user(request_data, id_user_token):
         different_values = {}
         same_values = {}
         try:
-            user = UserRepository.get_user_by_id(id_token)
+            user = UserRepository.get_user_by_id(id_user_token)
             UserService.validate_user_data_and_field_sizes(request_data)
             UserService.validate_cpf_email_to_update_user(user.id, request_data['cpf'], request_data['email'])
             user_type_service.validate_user_type(request_data['user_type'])

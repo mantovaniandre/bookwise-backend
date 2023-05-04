@@ -63,3 +63,21 @@ class BookRepository:
         book = session.query(Book).filter_by(isbn=isbn).first()
         return book
 
+    @staticmethod
+    def save_book_to_database(new_book):
+        try:
+            session.add(new_book)
+            session.commit()
+            session.refresh(new_book)
+            user_id = new_book.id
+            if user_id is not None:
+                return True
+            else:
+                session.rollback()
+                raise UserCreationError()
+        except Exception as e:
+            session.rollback()
+            raise DatabaseError(str(e))
+        finally:
+            session.close()
+

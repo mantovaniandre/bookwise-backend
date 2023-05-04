@@ -17,9 +17,9 @@ class UserController:
             raise e
 
     @staticmethod
-    def update_user(request_data, id_token):
+    def update_user(request_data, id_user_token):
         try:
-            UserService.update_user(request_data, id_token)
+            UserService.update_user(request_data, id_user_token)
         except Exception as e:
             session.rollback()
             raise e

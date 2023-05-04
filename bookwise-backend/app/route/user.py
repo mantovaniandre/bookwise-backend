@@ -12,7 +12,7 @@ user_response = UserResponse()
 session = Session()
 
 
-@user_route.route("/userCreate", methods=["POST"])
+@user_route.route("/createUser", methods=["POST"])
 def create_user():
     try:
         request_data = request.get_json()
@@ -27,13 +27,13 @@ def create_user():
         session.close()
 
 
-@user_route.route('/userUpdate', methods=['PUT'])
+@user_route.route('/updateUser', methods=['PUT'])
 @jwt_required()
 def update_user():
     try:
         request_data = request.get_json()
-        id_token = get_jwt_identity()
-        user_controller.update_user(request_data, id_token)
+        id_user_token = get_jwt_identity()
+        user_controller.update_user(request_data, id_user_token)
         response_successful = user_response.response_user_updated_successfully()
         return response_successful
     except Exception as e:
@@ -44,7 +44,7 @@ def update_user():
         session.close()
 
 
-@user_route.route('/profile', methods=['GET'])
+@user_route.route('/profileUser', methods=['GET'])
 @jwt_required()
 def get_user_profile():
     try:

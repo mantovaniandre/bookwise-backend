@@ -37,3 +37,19 @@ class BookResponse():
         response = Response(json.dumps(data), status=400, content_type='application/json')
         return response
 
+    @staticmethod
+    def response_create_book_successfully():
+        data = {"message": "book created successfully",
+                "status": "201",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_error_create_book(exception_error):
+        data = {"message": exception_error,
+                "status": "400",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=400, content_type='application/json')
+        return response
+

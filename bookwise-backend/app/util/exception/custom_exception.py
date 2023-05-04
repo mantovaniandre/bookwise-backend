@@ -117,7 +117,13 @@ class BookNotFoundIdError(Exception):
         super().__init__(f"The book {book_id} not found.")
 
 
-class UserCannotUpdateBooks(Exception):
+class UserCannotUpdateBookError(Exception):
+    def __init__(self, user_id):
+        self.user_id = user_id
+        super().__init__(f"user the id {user_id} cannot update books.")
+
+
+class UserCannotCreateBookError(Exception):
     def __init__(self, user_id):
         self.user_id = user_id
         super().__init__(f"user the id {user_id} cannot update books.")
@@ -158,8 +164,15 @@ class IsbnAlreadyExistsException(Exception):
     def __init__(self):
         super().__init__(f"The isbn already exists.")
 
+
 class NewUserCreationError(Exception):
     def __init__(self, message="Error creating new user."):
+        self.message = message
+        super().__init__(self.message)
+
+
+class NewBookCreationError(Exception):
+    def __init__(self, message="Error creating new book."):
         self.message = message
         super().__init__(self.message)
 
@@ -169,6 +182,11 @@ class UserCreationError(Exception):
         self.message = message
         super().__init__(self.message)
 
+
+class BookCreationError(Exception):
+    def __init__(self, message="Error creating book."):
+        self.message = message
+        super().__init__(self.message)
 
 class UserUpdateError(Exception):
     def __init__(self, e):
@@ -210,6 +228,12 @@ class SameDataInDatabaseException(Exception):
     def __init__(self, message="The data is the same as in the database. No changes were made."):
         self.message = message
         super().__init__(self.message)
+
+
+class CreatingBookISBNError(ValueError):
+    def __init__(self, isbn):
+        self.isbn = isbn
+        super().__init__(f"error creating book: {isbn} already exists.")
 
 
 class InvalidUserTypeError(Exception):

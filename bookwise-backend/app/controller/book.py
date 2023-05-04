@@ -32,3 +32,12 @@ class BookController:
         except Exception as e:
             session.rollback()
             raise e
+
+    @staticmethod
+    def create_book(request_data, id_user_token):
+        try:
+            book_service.create_book(request_data, id_user_token)
+            return True
+        except Exception as e:
+            session.rollback()
+            raise e

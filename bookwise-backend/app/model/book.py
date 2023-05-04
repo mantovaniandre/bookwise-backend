@@ -12,7 +12,7 @@ class Book(Base):
     title = Column(String(50))
     author = Column(String(50))
     year = Column(String(10))
-    isbn = Column(String(30))
+    isbn = Column(String(13))
     edition = Column(String(30))
     origin = Column(String(30))
     book_format = Column(String(30))
@@ -23,7 +23,7 @@ class Book(Base):
     stock = Column(String(4))
     url_img = Column(String(255))
     description = Column(String(255))
-    price = Column(String(8))
+    price = Column(String(6))
     category = Column(String(20))
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
