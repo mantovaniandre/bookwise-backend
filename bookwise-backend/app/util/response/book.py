@@ -14,7 +14,7 @@ class BookResponse():
         return response
 
     @staticmethod
-    def response_error_get_book(exception_error):
+    def response_get_book_error(exception_error):
         data = {"message": exception_error,
                 "status": "400",
                 "content_type": "application/json"}
@@ -22,7 +22,7 @@ class BookResponse():
         return response
 
     @staticmethod
-    def response_book_updated_successfully():
+    def response_updated_book_successfully():
         data = {"message": "book updated successfully",
                 "status": "201",
                 "content_type": "application/json"}
@@ -30,7 +30,7 @@ class BookResponse():
         return response
 
     @staticmethod
-    def response_error_updating_book(exception_error):
+    def response_updating_book_error(exception_error):
         data = {"message": exception_error,
                 "status": "400",
                 "content_type": "application/json"}
@@ -46,7 +46,23 @@ class BookResponse():
         return response
 
     @staticmethod
-    def response_error_create_book(exception_error):
+    def response_create_book_error(exception_error):
+        data = {"message": exception_error,
+                "status": "400",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=400, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_delete_book_successfully(book):
+        data = {"message": f"book {book} delete successfully",
+                "status": "201",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_delete_book_error(exception_error):
         data = {"message": exception_error,
                 "status": "400",
                 "content_type": "application/json"}

@@ -4,6 +4,12 @@ class AddressDeletionError(Exception):
         super().__init__(f"Error deleting address with ID {address_id}.")
 
 
+class BookDeletionError(Exception):
+    def __init__(self, book_id):
+        self.book_id = book_id
+        super().__init__(f"Error deleting book with ID {book_id}.")
+
+
 class AddressValidationError(Exception):
     def __init__(self, message="Address validation error."):
         self.message = message

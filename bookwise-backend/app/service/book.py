@@ -19,7 +19,6 @@ class BookService:
         max_lengths = {'title': 50, 'author': 50, 'year': 10, 'isbn': 13, 'edition': 30, 'origin': 30,
                        'book_format': 30, 'binding': 30, 'language': 30, 'country': 50, 'pages': 4,
                        'stock': 4, 'url_img': 255, 'description': 255, 'price': 6, 'category': 20}
-
         for field in required_fields:
             if field not in request_data:
                 raise MissingRequiredFieldError(field)
@@ -64,7 +63,6 @@ class BookService:
             description=request_book['description'],
             price=request_book['price'],
             category=request_book['category'],
-
         )
         if new_book:
             return new_book
@@ -99,7 +97,6 @@ class BookService:
                     'price': book.price,
                     'category': book.category
                 }
-
                 supposed_new_book = {
                     'title': request_data['title'],
                     'author': request_data['author'],
@@ -118,7 +115,6 @@ class BookService:
                     'price': request_data['price'],
                     'category': request_data['category']
                 }
-
                 for key, value in supposed_old_book.items():
                     new_value_upper = supposed_new_book[key].upper()
                     old_value_upper = value.upper() if value else None
@@ -129,12 +125,10 @@ class BookService:
                             raise IsbnAlreadyExistsException()
                     else:
                         same_values[key] = new_value_upper
-
                 if different_values:
                     book_repository.update_book(book.id, **different_values)
                 else:
                     raise SameDataInDatabaseException()
-
                 return True
             else:
                 raise UserCannotUpdateBookError(user.user_type_id)
@@ -158,3 +152,21 @@ class BookService:
                 raise UserCannotCreateBookError(user.user_type_id)
         except Exception as e:
             raise e
+
+    @staticmethod
+    def delete_book(id_user_token, request_book_id):
+        try:
+            user = user_repository.get_user_by_id(id_user_token)
+            if user.id == 1:
+                existing_book = book_repository.verify_book_by_id(request_book_id)
+                existing_book_dict = existing_book.to_dict()
+                if existing_book_dict:
+                    book_repository.delete_book_by_id(request_book_id)
+                    return existing_book_dict
+                else:
+                    raise CreatingBookISBNError(request_book_id)
+            else:
+                raise UserCannotCreateBookError(user.user_type_id)
+        except Exception as e:
+            raise e
+
