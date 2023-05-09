@@ -1,20 +1,20 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import text
+
 from configuration.database import Session
 from service.book import BookService
 from util.response.book import BookResponse
 
 book_route = Blueprint("book_route", __name__)
-
-session = Session()
 book_response = BookResponse()
 book_service = BookService()
 
 
 @book_route.route('/getAllBooks', methods=['GET'])
-def get_books():
+def get_all_books():
     try:
-        book = book_service.get_book()
+        book = book_service.get_all_books()
         response_successful = book_response.response_get_book_successfully(book)
         return response_successful
     except Exception as e:
@@ -43,11 +43,8 @@ def update_book(request_book_id):
         response_successful = book_response.response_updated_book_successfully()
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = book_response.response_updating_book_error(str(e))
         return response_error
-    finally:
-        session.close()
 
 
 @book_route.route('/createBook', methods=['PUT'])
@@ -60,11 +57,8 @@ def create_book():
         response_successful = book_response.response_create_book_successfully()
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = book_response.response_create_book_error(str(e))
         return response_error
-    finally:
-        session.close()
 
 
 @book_route.route('/deleteBookById/<request_book_id>', methods=['DELETE'])
@@ -76,8 +70,6 @@ def delete_book(request_book_id):
         response_successful = book_response.response_delete_book_successfully(book['title'])
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = book_response.response_delete_book_error(str(e))
         return response_error
-    finally:
-        session.close()
+

@@ -8,7 +8,6 @@ user_route = Blueprint("user_route", __name__)
 # created instances
 user_service = UserService()
 user_response = UserResponse()
-session = Session()
 
 
 @user_route.route("/createUser", methods=["POST"])
@@ -19,11 +18,8 @@ def create_user():
         response_successful = user_response.response_user_created_successfully()
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = user_response.response_error_creating_user(str(e))
         return response_error
-    finally:
-        session.close()
 
 
 @user_route.route('/updateUser', methods=['PUT'])
@@ -36,11 +32,21 @@ def update_user():
         response_successful = user_response.response_user_updated_successfully()
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = user_response.response_error_updating_user(str(e))
         return response_error
-    finally:
-        session.close()
+
+
+@user_route.route('/deleteUser', methods=['DELETE'])
+@jwt_required()
+def delete_user():
+    try:
+        id_user_token = get_jwt_identity()
+        user_service.delete_user(id_user_token)
+        response_successful = user_response.response_user_deleted_successfully()
+        return response_successful
+    except Exception as e:
+        response_error = user_response.response_error_deleted_user(str(e))
+        return response_error
 
 
 @user_route.route('/profileUser', methods=['GET'])
@@ -52,8 +58,5 @@ def get_user_profile():
         response_successful = user_response.response_get_user_profile_successfully(user)
         return response_successful
     except Exception as e:
-        session.rollback()
         response_error = user_response.response_error_updating_user(str(e))
         return response_error
-    finally:
-        session.close()

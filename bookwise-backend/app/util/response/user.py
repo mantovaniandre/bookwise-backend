@@ -43,3 +43,27 @@ class UserResponse:
                 "content_type": "application/json"}
         response = Response(json.dumps(data), status=400, content_type='application/json')
         return response
+
+    @staticmethod
+    def response_user_deleted_successfully():
+        data = {"message": "user deleted successfully",
+                "status": "201",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_error_deleted_user(exception_error):
+        data = {"message": exception_error,
+                "status": "400",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_error_deleting_user(exception_error):
+        data = {"message": exception_error,
+                "status": "400",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=400, content_type='application/json')
+        return response

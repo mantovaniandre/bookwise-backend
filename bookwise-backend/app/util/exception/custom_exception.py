@@ -4,10 +4,29 @@ class AddressDeletionError(Exception):
         super().__init__(f"Error deleting address with ID {address_id}.")
 
 
+class AddressUpdatingError(Exception):
+    def __init__(self, address_id):
+        self.address_id = address_id
+        super().__init__(f"Error updating address with ID {address_id}.")
+
+
+class GetAddressByIdOfUserError(Exception):
+    def __init__(self, address_id):
+        self.address_id = address_id
+        super().__init__(f"Error get address by id of user with ID {address_id}.")
+
+
+
 class BookDeletionError(Exception):
     def __init__(self, book_id):
         self.book_id = book_id
         super().__init__(f"Error deleting book with ID {book_id}.")
+
+
+class UserDeletionError(Exception):
+    def __init__(self, user_id):
+        self.user_id = user_id
+        super().__init__(f"Error deleting user with ID {user_id}.")
 
 
 class AddressValidationError(Exception):
@@ -30,6 +49,12 @@ class AddressSaveError(Exception):
 
 class CreditCardSaveError(Exception):
     def __init__(self, message="Error saving credit card."):
+        self.message = message
+        super().__init__(self.message)
+
+
+class CreditCardUpdatingError(Exception):
+    def __init__(self, message="Error updating credit card."):
         self.message = message
         super().__init__(self.message)
 

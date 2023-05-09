@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, func
+from sqlalchemy import Column, Integer, String, DateTime, func
 from configuration.database import Base
 from util.datatime.data_time_conversion import DataTimeConversion
 

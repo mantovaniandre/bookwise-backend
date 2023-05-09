@@ -13,7 +13,8 @@ from service.user_type import UsertypeService
 from util.exception.custom_exception import MissingRequiredFieldError, InvalidEmailFormatError, DuplicateEmailError, \
     InvalidPasswordError, NewUserCreationError, \
     AddressDeletionError, PasswordEncryptionError, AddressValidationError, UserCreationError, UserUpdateError, \
-    CPFHasToHaveOnlyNumbers, InvalidFieldLengthError, DuplicateCPFError, SameDataInDatabaseException
+    CPFHasToHaveOnlyNumbers, InvalidFieldLengthError, DuplicateCPFError, SameDataInDatabaseException, \
+    UserNotFoundIdError
 
 # created instances
 user_repository = UserRepository()
@@ -297,5 +298,17 @@ class UserService:
             user_dict['address'] = address.to_dict()
             user_dict['credit_card'] = credit_card.to_dict()
             return user_dict
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def delete_user(id_token):
+        try:
+            user = UserRepository.get_user_by_id(id_token)
+            if user:
+                user_repository.delete_user_by_id(user.id)
+                return True
+            else:
+                raise UserNotFoundIdError(user)
         except Exception as e:
             raise e

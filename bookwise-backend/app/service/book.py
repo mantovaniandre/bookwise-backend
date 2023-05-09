@@ -28,9 +28,9 @@ class BookService:
                 raise InvalidFieldLengthError(field, max_lengths[field])
 
     @staticmethod
-    def get_book():
+    def get_all_books():
         try:
-            book = book_repository.get_book()
+            book = book_repository.get_all_books()
             return book
         except Exception as e:
             raise e
@@ -157,7 +157,7 @@ class BookService:
     def delete_book(id_user_token, request_book_id):
         try:
             user = user_repository.get_user_by_id(id_user_token)
-            if user.id == 1:
+            if user.user_type_id == 1:
                 existing_book = book_repository.verify_book_by_id(request_book_id)
                 existing_book_dict = existing_book.to_dict()
                 if existing_book_dict:
