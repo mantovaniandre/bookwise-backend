@@ -23,6 +23,23 @@ class BookDeletionError(Exception):
         super().__init__(f"Error deleting book with ID {book_id}.")
 
 
+class GetBookByLanguageError(Exception):
+    def __init__(self, language):
+        self.language = language
+        super().__init__(f"Error finding book with language: {language}.")
+
+
+class GetBookByAuthorError(Exception):
+    def __init__(self, author):
+        self.author = author
+        super().__init__(f"Error finding book with author: {author}.")
+
+
+class GetBookByTitleError(Exception):
+    def __init__(self, title):
+        self.title = title
+        super().__init__(f"Error finding book with title: {title}.")
+
 class UserDeletionError(Exception):
     def __init__(self, user_id):
         self.user_id = user_id

@@ -1,11 +1,11 @@
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from configuration.database import Session
+from sqlalchemy import text
 from model.book import Book
 from util.datatime.data_time_conversion import DataTimeConversion
 from util.exception.custom_exception import BooksNotFoundError, DatabaseError, BookNotFoundIdError, BookDeletionError, \
-    NewBookCreationError
-
+    NewBookCreationError, GetBookByLanguageError, GetBookByAuthorError
 
 data_time_conversion = DataTimeConversion()
 
@@ -102,6 +102,45 @@ class BookRepository:
             session.rollback()
             raise DatabaseError(str(e))
 
+    @staticmethod
+    def get_book_by_language(term):
+        try:
+            with Session() as session:
+                books = session.query(Book).filter(Book.language.like(f'%{term}%')).all()
+                books_dict = [book.to_dict() for book in books]
+                if not books_dict:
+                    raise GetBookByLanguageError(term)
+                else:
+                    return books_dict
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
 
+    @staticmethod
+    def get_book_by_title(term):
+        try:
+            with Session() as session:
+                books = session.query(Book).filter(Book.title.like(f'%{term}%')).all()
+                books_dict = [book.to_dict() for book in books]
+                if not books_dict:
+                    raise GetBookByLanguageError(term)
+                else:
+                    return books_dict
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
 
+    @staticmethod
+    def get_book_by_author(term):
+        try:
+            with Session() as session:
+                books = session.query(Book).filter(Book.author.like(f'%{term}%')).all()
+                books_dict = [book.to_dict() for book in books]
+                if not books_dict:
+                    raise GetBookByAuthorError(term)
+                else:
+                    return books_dict
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise DatabaseError(str(e))
 

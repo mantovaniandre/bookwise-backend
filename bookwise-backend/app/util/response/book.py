@@ -69,3 +69,20 @@ class BookResponse():
         response = Response(json.dumps(data), status=400, content_type='application/json')
         return response
 
+    @staticmethod
+    def response_search_book_successfully(books):
+        data = {"message": f"book found successfully",
+                "status": "201",
+                "content_type": "application/json",
+                "book": books}
+        response = Response(json.dumps(data), status=201, content_type='application/json')
+        return response
+
+    @staticmethod
+    def response_search_book_error(exception_error):
+        data = {"message": exception_error,
+                "status": "400",
+                "content_type": "application/json"}
+        response = Response(json.dumps(data), status=400, content_type='application/json')
+        return response
+

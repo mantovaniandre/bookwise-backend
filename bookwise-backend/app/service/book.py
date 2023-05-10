@@ -46,6 +46,8 @@ class BookService:
 
     @staticmethod
     def create_new_book(request_book):
+        request_book = {k: v.upper() if isinstance(v, str) else v for k, v in request_book.items()}
+
         new_book = Book(
             title=request_book['title'],
             author=request_book['author'],
@@ -139,7 +141,7 @@ class BookService:
     def create_book(request_data, id_user_token):
         try:
             user = user_repository.get_user_by_id(id_user_token)
-            if user.id == 1:
+            if user.user_type_id == 1:
                 BookService.validate_user_data_and_field_sizes(request_data)
                 existing_book = book_repository.verify_book_by_isbn(request_data['isbn'])
                 if existing_book:
@@ -167,6 +169,20 @@ class BookService:
                     raise CreatingBookISBNError(request_book_id)
             else:
                 raise UserCannotCreateBookError(user.user_type_id)
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def search_books(option, term):
+        global books
+        try:
+            if option == 'language':
+                books = book_repository.get_book_by_language(term)
+            elif option == 'title':
+                books = book_repository.get_book_by_title(term)
+            elif option == 'author':
+                books = book_repository.get_book_by_author(term)
+            return books
         except Exception as e:
             raise e
 

@@ -1,8 +1,5 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import text
-
-from configuration.database import Session
 from service.book import BookService
 from util.response.book import BookResponse
 
@@ -71,5 +68,18 @@ def delete_book(request_book_id):
         return response_successful
     except Exception as e:
         response_error = book_response.response_delete_book_error(str(e))
+        return response_error
+
+
+@book_route.route('/searchBooks', methods=['GET'])
+def search_books():
+    try:
+        option = request.args.get('option')
+        term = request.args.get('term')
+        books = book_service.search_books(option, term)
+        response_successful = book_response.response_search_book_successfully(books)
+        return response_successful
+    except Exception as e:
+        response_error = book_response.response_search_book_error(str(e))
         return response_error
 
