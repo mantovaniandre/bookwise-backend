@@ -10,6 +10,7 @@ from model.user_type import UserType
 from model.gender import Gender
 from model.credit_card import CreditCard
 from model.book import Book
+from model.purchase import Purchase
 from flask_cors import CORS
 from configuration.secret_key import Config
 from util.field_mapping.book import books
