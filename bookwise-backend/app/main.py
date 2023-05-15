@@ -2,6 +2,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from controller.book import book_route
 from controller.login import login_route
+from controller.purchase import purchase_route
 from controller.user import user_route
 from migration.initial_data import create_tables, create_user_type, drop_tables, create_gender, insert_books
 from model.user import User
@@ -23,9 +24,10 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(user_route)
 app.register_blueprint(login_route)
 app.register_blueprint(book_route)
+app.register_blueprint(purchase_route)
 
 if __name__ == "__main__":
-    # drop_tables()
+    drop_tables()
     create_tables()
     create_user_type()
     create_gender()

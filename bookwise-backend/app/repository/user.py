@@ -81,7 +81,7 @@ class UserRepository:
                 raise DatabaseError(str(e))
 
     @staticmethod
-    def save_user_to_database(new_user):
+    def create_user_to_database(new_user):
         with Session() as session:
             try:
                 session.add(new_user)

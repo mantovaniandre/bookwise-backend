@@ -1,10 +1,9 @@
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from configuration.database import Session
-from sqlalchemy import text
 from model.book import Book
 from util.datatime.data_time_conversion import DataTimeConversion
-from util.exception.custom_exception import BooksNotFoundError, DatabaseError, BookNotFoundIdError, BookDeletionError, \
+from util.exception.custom_exception import DatabaseError, BookNotFoundIdError, BookDeletionError, \
     NewBookCreationError, GetBookByLanguageError, GetBookByAuthorError
 
 data_time_conversion = DataTimeConversion()
@@ -35,20 +34,16 @@ class BookRepository:
 
     @staticmethod
     def update_book(book_id, **update_values):
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        query = f"UPDATE books SET last_update = '{now}', "
-
-        for column, value in update_values.items():
-            query += f"{column} = :{column}, "
-
-        query = query[:-2]
-        query += f" WHERE id = :book_id;"
-
         try:
             with Session() as session:
-                session.query(Book).filter_by(id=book_id).update(update_values)
-                session.commit()
-            return True
+                book = session.query(Book).filter_by(id=book_id).first()
+                if book:
+                    for column, value in update_values.items():
+                        setattr(book, column, value)
+                    session.commit()
+                    return True
+                else:
+                    raise Exception(f"Livro com ID {book_id} não encontrado.")
         except SQLAlchemyError as e:
             raise DatabaseError(str(e))
 
@@ -71,7 +66,7 @@ class BookRepository:
             raise DatabaseError(str(e))
 
     @staticmethod
-    def save_book_to_database(new_book):
+    def create_book_to_database(new_book):
         with Session() as session:
             try:
                 session.add(new_book)

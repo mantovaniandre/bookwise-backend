@@ -148,7 +148,7 @@ class UserService:
             credit_card_id = credit_card_repository.save_credit_card(credit_card)
             new_user = UserService.create_new_user(request_data, encrypted_password, address_id, usertype_id, gender_id,
                                                    credit_card_id)
-            user_save = user_repository.save_user_to_database(new_user)
+            user_save = user_repository.create_user_to_database(new_user)
             if user_save:
                 return True
             else:

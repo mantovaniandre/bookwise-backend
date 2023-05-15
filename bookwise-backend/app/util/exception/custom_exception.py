@@ -159,6 +159,12 @@ class UserNotFoundIdError(Exception):
         super().__init__(f"User with ID {user_id} not found.")
 
 
+class PurchaseNotFoundIdError(Exception):
+    def __init__(self, user_id):
+        self.user_id = user_id
+        super().__init__(f"User with ID {user_id} not found purchase.")
+
+
 class BookNotFoundIdError(Exception):
     def __init__(self, book_id):
         self.book_id = book_id
@@ -227,6 +233,12 @@ class NewBookCreationError(Exception):
 
 class UserCreationError(Exception):
     def __init__(self, message="Error creating user."):
+        self.message = message
+        super().__init__(self.message)
+
+
+class PurchaseCreationError(Exception):
+    def __init__(self, message="Error creating purchase."):
         self.message = message
         super().__init__(self.message)
 

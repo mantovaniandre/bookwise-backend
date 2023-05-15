@@ -148,7 +148,7 @@ class BookService:
                     raise CreatingBookISBNError(request_data['isbn'])
                 else:
                     new_book = BookService.create_new_book(request_data)
-                    book_repository.save_book_to_database(new_book)
+                    book_repository.create_book_to_database(new_book)
                     return True
             else:
                 raise UserCannotCreateBookError(user.user_type_id)
