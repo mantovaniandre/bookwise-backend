@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from configuration.database import Session
 from service.user import UserService
 from util.response.user import UserResponse
 

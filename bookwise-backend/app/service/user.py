@@ -36,10 +36,10 @@ class UserService:
                            'neighborhood', 'city', 'state', 'country', 'card_number', 'type_card',
                            'flag', 'bank', 'country_bank', 'card_name', 'expiration', 'cvv']
 
-        max_lengths = {'first_name': 20, 'last_name': 20, 'email': 50, 'password': 255, 'cpf': 14,
-                       'phone': 11, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 9,
+        max_lengths = {'first_name': 20, 'last_name': 20, 'email': 50, 'password': 255, 'cpf': 11,
+                       'phone': 11, 'birthday': 10, 'user_type': 10, 'gender': 10, 'zip_code': 8,
                        'street': 100, 'number': 6, 'complement': 50, 'neighborhood': 50, 'city': 50,
-                       'state': 2, 'country': 6, 'card_number': 19, 'type_card': 10, 'flag': 20,
+                       'state': 2, 'country': 6, 'card_number': 16, 'type_card': 10, 'flag': 20,
                        'bank': 50, 'country_bank': 30, 'card_name': 30, 'expiration': 7, 'cvv': 3}
 
         for field in required_fields:
@@ -47,6 +47,27 @@ class UserService:
                 raise MissingRequiredFieldError(field)
             elif not request_data[field]:
                 raise MissingRequiredFieldError(field)
+            elif field == "cpf":
+                if len(request_data[field]) != 11:
+                    raise InvalidFieldLengthError(field, 11)
+            elif field == "phone":
+                if len(request_data[field]) != 11:
+                    raise InvalidFieldLengthError(field, 11)
+            elif field == "birthday":
+                if len(request_data[field]) != 10:
+                    raise InvalidFieldLengthError(field, 10)
+            elif field == "zip_code":
+                if len(request_data[field]) != 8:
+                    raise InvalidFieldLengthError(field, 8)
+            elif field == "card_number":
+                if len(request_data[field]) != 16:
+                    raise InvalidFieldLengthError(field, 16)
+            elif field == "expiration":
+                if len(request_data[field]) != 7:
+                    raise InvalidFieldLengthError(field, 7)
+            elif field == "cvv":
+                if len(request_data[field]) != 3:
+                    raise InvalidFieldLengthError(field, 3)
             if field in max_lengths and len(request_data[field]) > max_lengths[field]:
                 raise InvalidFieldLengthError(field, max_lengths[field])
 
