@@ -102,6 +102,9 @@ class PurchaseService:
 
         return purchase_data
 
+    @staticmethod
+    def get_purchase_by_id_user_and_id_book(id_user_token, id_book):
+        purchases = purchase_repository.get_purchase_by_id_user(user.id)
 
 
 

@@ -34,3 +34,14 @@ class PurchaseRepository:
                 session.rollback()
                 raise DatabaseError(str(e))
 
+    def get_purchase_by_id_user_and_id_book(user_id, book_id):
+        with Session() as session:
+            try:
+                purchases = session.query(Purchase).filter_by(user_id=user_id).all()
+                if not purchases:
+                    raise PurchaseNotFoundIdError(user_id)
+                purchases_dict = [purchase.to_dict() for purchase in purchases]
+                return purchases_dict
+            except SQLAlchemyError as e:
+                session.rollback()
+                raise DatabaseError(str(e))

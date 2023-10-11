@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-
 from service.purchase import PurchaseService
 from util.response.purchase import PurchaseResponse
 

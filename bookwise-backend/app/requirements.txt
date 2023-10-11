@@ -1,0 +1,7 @@
+Flask
+Flask-JWT-Extended
+flask-cors
+sqlalchemy
+pytz
+pymysql
+bcrypt
