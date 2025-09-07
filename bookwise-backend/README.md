@@ -14,7 +14,7 @@
 
 Este projeto funciona em conjunto com o **BookWise Frontend**:
 - 🎨 **Frontend Repository**: [bookwise-frontend](https://github.com/mantovaniandre/bookwise-frontend)
-- 🚀 **Tecnologias Frontend**: React.js, TypeScript, Styled Components
+- 🚀 **Tecnologias Frontend**: Angular, TypeScript
 
 ## ⚡ Principais Funcionalidades
 
@@ -214,7 +214,7 @@ CMD ["python", "main.py"]
 
 - 💼 [LinkedIn](https://linkedin.com/in/mantovaniandre)
 - 📧 Email: andreluizdiasmantovani@gmail.com
-- 🌐 Portfolio: [andremantovani.dev](https://andremantovani.dev)
+- 🌐 Site: https://amantovani.netlify.app/
 - 🐙 GitHub: [@mantovaniandre](https://github.com/mantovaniandre)
 
 ## 📄 Licença
@@ -226,7 +226,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 ⭐ **Se este projeto foi útil para você, considere dar uma estrela no repositório!**
 
 ### 🔗 Projetos Relacionados
-- [BookWise Frontend](https://github.com/mantovaniandre/bookwise-frontend) - Interface React.js
+- [BookWise Frontend](https://github.com/mantovaniandre/bookwise-frontend) - Interface Angular/TypeScript
 - [Outros projetos no meu perfil](https://github.com/mantovaniandre)
 
 ---
