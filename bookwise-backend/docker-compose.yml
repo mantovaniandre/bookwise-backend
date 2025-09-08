@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Database
+  db:
+    image: mysql:8.0
+    container_name: bookwise-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: bookwise_root_pass
+      MYSQL_DATABASE: bookwise
+      MYSQL_USER: bookwise_user
+      MYSQL_PASSWORD: bookwise_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis (optional, for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: bookwise-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  # Backend API
+  api:
+    build: .
+    container_name: bookwise-api
+    ports:
+      - "5000:5000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=mysql+pymysql://bookwise_user:bookwise_pass@db:3306/bookwise
+      - JWT_SECRET_KEY=your-super-secure-jwt-secret-key-change-in-production
+      - REDIS_URL=redis://redis:6379
+      - DEBUG=True
+      - CORS_ORIGINS=http://localhost:4200,http://localhost:3000
+      # Stripe configuration (replace with your keys)
+      - STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+      - STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/books"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (optional, for development)
+  frontend:
+    image: node:18-alpine
+    container_name: bookwise-frontend
+    working_dir: /app
+    ports:
+      - "4200:4200"
+    volumes:
+      - ../bookwise-frontend/bookwise:/app
+    command: sh -c "npm install && npm start -- --host 0.0.0.0"
+    depends_on:
+      - api
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: bookwise-network
