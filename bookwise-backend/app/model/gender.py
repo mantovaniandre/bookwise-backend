@@ -14,7 +14,7 @@ class Gender(Base):
     description = Column(String(10), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='gender', lazy='joined')
+    users = relationship('User', back_populates='gender')
 
     def __init__(self, **kwargs):
         self.description = kwargs.get('description')

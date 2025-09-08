@@ -17,7 +17,7 @@ class Purchase(Base):
 
     def __init__(self, price, quantity, user_id, book_id):
         self.price = price
-        self. quantity = quantity
+        self.quantity = quantity
         self.date = data_time_conversion.dataTimeConversionToSaoPaulo()
         self.user_id = user_id
         self.book_id = book_id

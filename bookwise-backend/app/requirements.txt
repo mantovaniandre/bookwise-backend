@@ -5,3 +5,9 @@ sqlalchemy
 pytz
 pymysql
 bcrypt
+python-decouple
+flask-limiter
+stripe
+marshmallow
+email-validator
+gunicorn

@@ -21,7 +21,6 @@ class CreditCard(Base):
     cvv = Column(String(10), nullable=False)
     last_update = Column(DateTime, nullable=True, onupdate=func.now())
 
-    user = relationship('User', back_populates='credit_card', lazy='joined')
 
     def __init__(self, card_number, type_card, flag, bank, country_bank, card_name, expiration, cvv):
         self.card_number = card_number
